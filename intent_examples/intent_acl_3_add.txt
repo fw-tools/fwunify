@@ -1,0 +1,7 @@
+define intent acl:
+  name	text('rule-acl-3')
+  from	endpoint('10.0.0.5')
+  to	endpoint('200.19.0.100')
+  block	traffic('udp/5050')
+  order	after('rule-acl-3')
+  add	middlebox('cisco-1'),middlebox('openflow-1')

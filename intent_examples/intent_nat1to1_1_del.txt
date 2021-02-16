@@ -1,0 +1,5 @@
+define intent nat11:
+  from	endpoint('200.19.0.50')
+  to	endpoint('10.0.0.50')
+  for 	flow('protocol:tcp|src_port:80|dest_port:90')
+  del	middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

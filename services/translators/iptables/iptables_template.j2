@@ -1,0 +1,26 @@
+{%- if 'acl' in intent_type %}
+{%-     if 'insert' in apply %}
+iptables -I {{ chain }} {{ order }} -s {{ from }} -d {{ to }} -p {{ traffic }} {{ traffic_port }} -j {{ rule }}
+{%-     elif 'remove' in apply %}
+iptables -D {{ chain }} -s {{ from }} -d {{ to }} -p {{ traffic }} {{ traffic_port }} -j {{ rule }}
+{%-     endif %}
+
+{%- elif 'nat' in intent_type %}
+{%-     if 'insert' in apply %}
+{%-         if from_port is defined %}
+iptables -t nat -A PREROUTING -d {{ from }} -p {{ protocol }} --dport {{ from_port }} -j DNAT --to-destination {{ to }}:{{ to_port}}
+iptables -t nat -A POSTROUTING -s {{ to }} -p {{ protocol }} --sport {{ to_port }} -j SNAT --to-source {{ from }}:{{ from_port}}
+{%-         else%}
+iptables -t nat -A PREROUTING -d {{ from }} -j DNAT --to-destination {{ to }}
+iptables -t nat -A POSTROUTING -s {{ to }} -j SNAT --to-source {{ from }}
+{%-         endif%}
+{%-     elif 'remove' in apply %}
+{%-         if from_port is defined %}
+iptables -t nat -D PREROUTING -d {{ from }} -p {{ protocol }} --dport {{ from_port }} -j DNAT --to-destination {{ to }}:{{ to_port}}
+iptables -t nat -D POSTROUTING -s {{ to }} -p {{ protocol }} --sport {{ to_port }} -j SNAT --to-source {{ from }}:{{ from_port}}
+{%-         else%}
+iptables -t nat -D PREROUTING -d {{ from }} -j DNAT --to-destination {{ to }}
+iptables -t nat -D POSTROUTING -s {{ to }} -j SNAT --to-source {{ from }}
+{%-         endif%}
+{%-     endif%}
+{%- endif %}

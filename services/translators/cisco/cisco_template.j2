@@ -1,0 +1,89 @@
+configure terminal
+!
+{%- if 'acl' in intent_type %}
+{%-     if start is defined and end is defined and 'insert' in apply  %}
+time-range {{ name }}
+{%-         if date_start is defined and date_end is defined %}
+absolute start {{ hour_start }} {{ date_start }} end {{ hour_end }} {{ date_end }}
+!
+{%-         else %}
+periodic daily {{ hour_start }} to {{ hour_end }}
+!
+{%-         endif %}
+{%-     endif %}
+
+{%-     if from_interface is defined %}
+{%-         if 'insert' in apply %}
+access-list {{ from_interface }}_access_in line {{ order }} extended {{ rule }} {{ traffic }} {{ from }} {{ to }} {{ traffic_port }} {{ logging }} {{ time_range }}
+access-group {{ from_interface }}_access_in in interface {{ from_interface }}
+clear conn
+{%-         elif 'remove' in apply %}
+no access-list {{ from_interface }}_access_in extended {{ rule }} {{ traffic }} {{ from }} {{ to }} {{ traffic_port }}
+clear conn
+{%-         endif %}
+{%-     elif to_interface is defined %}
+{%-         if 'insert' in apply %}
+access-list {{ to_interface }}_access_in line {{ order }} extended {{ rule }} {{ traffic }} {{ from }} {{ to }} {{ traffic_port }} {{ logging }} {{ time_range }}
+access-group {{ to_interface }}_access_in in interface {{ to_interface }}
+clear conn
+{%-         elif 'remove' in apply %}
+no access-list {{ to_interface }}_access_in extended {{ rule }} {{ traffic }} {{ from }} {{ to }} {{ traffic_port }}
+clear conn
+{%-         endif %}
+{%-     endif%}
+{%-     if start is defined and 'remove' in apply %}
+!
+no time-range {{name}}
+{%-     endif %}
+
+
+
+{%- elif 'nat' in intent_type %}
+{%-     if 'insert' in apply %}
+object network {{ to }}
+host {{ to }}
+object network {{ from }}
+host {{ from }}
+{%-         if from_port is defined and to_port is defined %}
+nat static {{ to }} service {{ protocol }} {{ from_port }} {{ to_port }}
+{%-         else %}
+nat static {{ to }}
+{%-         endif %}
+exit
+{%-     elif 'remove' in apply %}
+object network {{ from }}
+{%-         if from_port is defined and to_port is defined %}
+no nat static {{ to }} service {{ protocol }} {{ from_port }} {{ to_port }}
+{%-         else %}
+no nat static {{ to }}
+{%-         endif %}
+no object network {{ from }}
+no object network {{ to }}
+{%-     endif %}
+
+{%- elif 'traffic_shaping' in intent_type %}
+{%-     if 'insert' in apply %}
+access-list global_mpc line {{ order }} extended permit {{ traffic }} {{ from }} {{ to }} {{ traffic_port }}
+access-list global_mpc line {{ order + 1 }} extended permit {{ traffic }} {{ to }} {{ from }} {{ traffic_port }}
+class-map global-class-{{ name }}
+  match access-list global_mpc
+policy-map global-policy
+  class global-class-{{ name }}
+    police input {{ with }} {{ rate }} conform-action transmit exceed-action drop
+    police output {{ with }} {{ rate }} conform-action transmit exceed-action drop
+!
+exit
+!
+exit
+!
+clear conn
+{%-     elif 'remove' in apply %}
+policy-map global-policy
+  no class global-class-{{ name }}
+no class-map global-class-{{ name }}
+clear configure access-list global_mpc
+clear conn
+{%-     endif %}
+{%- endif %}
+!
+exit

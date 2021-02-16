@@ -1,0 +1,8 @@
+define intent traffic_shaping:
+  name	text('rule-ts-1')
+  from	endpoint('10.0.0.10')
+  to	endpoint('200.19.0.10')
+  for	traffic('udp/5555')
+  with	throughput('30Mbps')
+  order	before('all')
+  add 	middlebox('cisco-1')

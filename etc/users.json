@@ -1,0 +1,19 @@
+{
+   "Users":[
+      {
+         "UserName":"user1",
+         "PasswordHash":"$pbkdf2-sha256$29000$opQSgrA2phQi5Lx3LsV4jw$l17ICXOzhGKkGOKZHv.AyfkoHjOy8CdV/ggVoK5ISkQ",
+         "Role":"super-admin"
+      },
+      {
+         "UserName":"user2",
+         "PasswordHash":"$pbkdf2-sha256$29000$nzPGOKeU0lrrvdfaG.O8dw$dlAT1BIsZCYseZ0q0NfftRhvnDzE5cAEMpwck2Lst30",
+         "Role":"admin"
+      },
+      {
+         "UserName":"user3",
+         "PasswordHash":"$pbkdf2-sha256$29000$SknpfQ9BqNV6791bay1FSA$cTMV92xAauf9oPErUqPGTpr5dr3z30tUtwWmNKDMZU4",
+         "Role":"user"
+      }
+   ]
+}

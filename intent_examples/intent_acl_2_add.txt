@@ -1,0 +1,11 @@
+define intent acl:
+  name		text('rule-acl-2')
+  from		endpoint('10.0.0.5')
+  to		endpoint('200.19.0.100')
+  allow 	traffic('ftp')
+  order		after('rule-acl-1')
+  logging	enable
+  start		date('11/01/2021')
+  end		date('01/02/2021')
+  description	text('permit ftp at 01 fev 2021')
+  add		middlebox('cisco-1')

@@ -1,0 +1,34 @@
+{%- if 'acl' in intent_type %}
+{%-     if 'insert' in apply %}
+ovs-ofctl add-flow {{ hostname }} dl_type=0x800,priority={{ order }},{{ args }}action={{ rule }}
+{%-     elif 'remove' in apply %}
+ovs-ofctl del-flows {{ hostname }} dl_type=0x800,{{ args }}
+{%-     endif %}
+
+{%- elif 'nat' in intent_type %}
+{%-     if 'insert' in apply %}
+{%-         if from_port is defined %}
+ovs-ofctl --strict add-flow {{ hostname }} {{protocol}},nw_dst={{ from }},tp_dst={{ from_port }},actions=mod_nw_dst={{ to }},mod_tp_dst={{ to_port }}
+ovs-ofctl --strict add-flow {{ hostname }} {{protocol}},nw_src={{ to }},tp_src={{ to_port }},actions=mod_nw_src={{ from }},mod_tp_src={{ from_port }}
+
+{%-         else %}
+ovs-ofctl --strict add-flow {{ hostname }} nw_dst={{ to }},actions=mod_nw_dst={{ from }}
+ovs-ofctl --strict add-flow {{ hostname }} nw_src={{ from }},actions=mod_nw_src= {{ to }}
+{%-         endif %}
+{%-     elif 'remove' in apply %}
+{%-         if from_port is defined %}
+ovs-ofctl del-flows {{ hostname }} {{protocol}},nw_dst={{ from }},tp_dst={{ from_port }}
+ovs-ofctl del-flows {{ hostname }} {{protocol}},nw_src={{ to }},tp_src={{ to_port }}
+{%-         else %}
+ovs-ofctl del-flows {{ hostname }} nw_dst={{ from }}
+ovs-ofctl del-flows {{ hostname }} nw_src={{ to }}
+{%-         endif %}
+{%-     endif %}
+
+{%- elif 'traffic_shaping' in intent_type %}
+{%-     if 'insert' in apply %}
+ovs-vsctl set interface {{ hostname }}-eth1 ingress_policing_rate={{ with }} ingress_policing_burst={{ burst }}
+{%-     elif 'remove' in apply %}
+ovs-vsctl set interface {{ hostname }}-eth1 ingress_policing_rate=0
+{%-     endif %}
+{%- endif %}

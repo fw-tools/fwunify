@@ -1,0 +1,9 @@
+define intent traffic_shaping:
+  name		text('rule-ts-2')
+  from		range('10.0.0.0/24')
+  to		endpoint('200.19.0.100')
+  for		traffic('ftp')
+  with		throughput('5Mbps')
+  order		before('rule-ts-1')
+  description	text('limit ftp traffic')
+  del 		middlebox('cisco-1')
