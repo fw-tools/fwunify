@@ -228,9 +228,8 @@ class OpenflowService:
         Openflow Service
         Microservice that translates the information sent by the api to commands applicable in Openflow devices
         Receive: this function receives a python dictionary, with at least the following information for each processing
-        Return:
-            - The microservice activates the application module via ssh and returns the result. If any incorrect
-            information in the dictionary, the error message is returned
+        Return: The microservice activates the application module via ssh and returns the result. If any incorrect
+        information in the dictionary, the error message is returned
         Translations for NAT1toN and Route have not yet been implemented
         """
     name = "openflow_translator"

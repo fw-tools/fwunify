@@ -135,9 +135,9 @@ class PaloaltoService:
         Palo alto
         Microservice that translates the information sent by the api to commands applicable in Palo Alto
         Receive: this function receives a python dictionary, with at least the following information for each processing
-        Return:
-            - The microservice activates the application module via ssh and returns the result. If any incorrect
-            information in the dictionary, the error message is returned
+        
+        Return: The microservice activates the application module via ssh and returns the result. If any incorrect
+        information in the dictionary, the error message is returned
     """
     name = "paloalto_translator"
     zipcode_rpc = RpcProxy('paloalto_service_translator')

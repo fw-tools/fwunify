@@ -226,9 +226,9 @@ class IptablesService:
         IPTABLES Service
         Microservice that translates the information sent by the api to commands applicable in IPTABLES
         Receive: this function receives a python dictionary, with at least the following information for each processing
-        Return:
-            - The microservice activates the application module via ssh and returns the result. If any incorrect
-            information in the dictionary, the error message is returned
+        
+        Return: The microservice activates the application module via ssh and returns the result. If any incorrect
+        information in the dictionary, the error message is returned
         """
     name = "iptables_translator"
     zipcode_rpc = RpcProxy('iptables_service_translator')

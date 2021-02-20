@@ -292,9 +292,9 @@ class CiscoService:
         Cisco 5520 Service
         Microservice that translates the information sent by the api to commands applicable in Cisco ASA 5520
         Receive: this function receives a python dictionary, with at least the following information for each processing
-        Return:
-            - The microservice activates the application module via ssh and returns the result. If any incorrect
-            information in the dictionary, the error message is returned
+        
+	Return: The microservice activates the application module via ssh and returns the result. If any incorrect
+        information in the dictionary, the error message is returned
     """
     name = "cisco_translator"
     zipcode_rpc = RpcProxy('cisco_service_translator')
