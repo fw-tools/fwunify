@@ -1,0 +1,8 @@
+{%- if 'url_filter' in intent_type %}
+{%-     if 'insert' in apply %}
+set shared profiles url-filtering {{ from }} {{ rule }} {{ to }}
+{%-     elif 'remove' in apply %}
+delete shared profiles url-filtering {{ from }} {{ rule }} {{ to }}
+{%-     endif %}
+{%- endif %}
+

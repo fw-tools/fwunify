@@ -1,2 +1,4 @@
 # log ts rules
+{'intent_type': 'traffic_shaping', 'name': 'rule-ts-1', 'from': '10.0.0.0 255.255.255.0', 'to': 'host 200.19.0.100', 'with': 30000000, 'from_mask': '255.255.255.0', 'before': 'all', 'traffic': 'tcp/21', 'devices': ['cisco-1'], 'apply': 'insert', 'rate': 15000}
+{'intent_type': 'traffic_shaping', 'name': 'rule-ts-1', 'from': '10.0.0.0 255.255.255.0', 'to': 'host 200.19.0.100', 'with': 30000000, 'from_mask': '255.255.255.0', 'before': 'all', 'traffic': 'tcp/21', 'devices': ['cisco-1'], 'apply': 'insert', 'rate': 15000}
 

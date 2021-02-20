@@ -22,10 +22,16 @@ def check_ip_network(ip, network):
 def check_values(dict_intent):
     if dict_intent['intent_type'] == 'acl':
         parameters = ['from', 'to', 'rule', 'traffic', 'apply']
-    elif dict_intent['intent_type'] == 'nat11':
+    elif dict_intent['intent_type'] == 'nat_1to1':
         parameters = ['from', 'to', 'protocol', 'apply']
     elif dict_intent['intent_type'] == 'traffic_shaping':
         parameters = ['name', 'from', 'to', 'with', 'traffic', 'apply']
+    elif dict_intent['intent_type'] == 'dst_route':
+        parameters = ['from', 'to', 'apply']
+    elif dict_intent['intent_type'] == 'nat_nto1':
+        parameters = ['from', 'to', 'apply']
+    elif dict_intent['intent_type'] == 'url_filter':
+        parameters = ['name', 'from', 'to', 'rule', 'apply']
     else:
         return "CISCO TRANSLATOR: Intent type not supported"
     for parameter in parameters:
@@ -190,7 +196,6 @@ def process_nat11(dict_intent):
             dict_intent['to_interface'] = interface['name']
         else:
             return 'CISCO TRANSLATOR: IP/Network not recognized'
-
     # loading and render template jinja2
     file_loader = FileSystemLoader('.')
     env = Environment(loader=file_loader)
@@ -244,17 +249,49 @@ def process_traffic_shaping(dict_intent):
     return output
 
 
+def process_dst_route(dict_intent):
+    # loading YAML file with firewall settings
+    config = yaml_load('cisco_config.yml')
+    if 'to_mask' in dict_intent:
+        dict_intent['to'] = dict_intent['to'] + ' ' + dict_intent['to_mask']
+    # loading and render template jinja2
+    file_loader = FileSystemLoader('.')
+    env = Environment(loader=file_loader)
+    template = env.get_template('cisco_template.j2')
+    output = template.render(dict_intent)
+    with ClusterRpcProxy(CONFIG) as rpc_connect:
+        rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
+                                              config['password'], config['device_type'], output)
+    return output
+
+
+def process_natn1(dict_intent):
+    # loading YAML file with firewall settings
+    config = yaml_load('cisco_config.yml')
+    # identifies interfaces
+    dict_intent['name'] = 'obj-' + dict_intent['from']
+    if 'from_mask' in dict_intent:
+        dict_intent['from'] = dict_intent['from'] + ' ' + dict_intent['from_mask']
+    # loading and render template jinja2
+    file_loader = FileSystemLoader('.')
+    env = Environment(loader=file_loader)
+    template = env.get_template('cisco_template.j2')
+    output = template.render(dict_intent)
+    with ClusterRpcProxy(CONFIG) as rpc_connect:
+        rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
+                                              config['password'], config['device_type'], output)
+    return output
+
+
+def process_url_filter(dict_intent):
+    return 'CISCO TRANSLATOR: URL Filter is not yet supported'
+
+
 class CiscoService:
     """
         Cisco 5520 Service
         Microservice that translates the information sent by the api to commands applicable in Cisco ASA 5520
         Receive: this function receives a python dictionary, with at least the following information for each processing
-            For acl process:
-                ['from', 'to', 'rule', 'traffic', 'apply']
-            For nat11 process:
-                ['from', 'to', 'protocol', 'apply']
-            For traffic_shaping process:
-                ['name', 'from', 'to', 'with', 'traffic', 'apply']
         Return:
             - The microservice activates the application module via ssh and returns the result. If any incorrect
             information in the dictionary, the error message is returned
@@ -269,10 +306,16 @@ class CiscoService:
             if output is True:
                 if dict_intent['intent_type'] == 'acl':
                     output_service = process_acl(dict_intent)
-                elif dict_intent['intent_type'] == 'nat11':
+                elif dict_intent['intent_type'] == 'nat_1to1':
                     output_service = process_nat11(dict_intent)
                 elif dict_intent['intent_type'] == 'traffic_shaping':
                     output_service = process_traffic_shaping(dict_intent)
+                elif dict_intent['intent_type'] == 'dst_route':
+                    output_service = process_dst_route(dict_intent)
+                elif dict_intent['intent_type'] == 'nat_nto1':
+                    output_service = process_natn1(dict_intent)
+                elif dict_intent['intent_type'] == 'url_filter':
+                    output_service = process_url_filter(dict_intent)
                 if output_service == 'ERROR':
                     return 'CISCO TRANSLATOR: Error when applying settings'
                 else:

@@ -1,0 +1,15 @@
+---
+hostname: paloalto-firewall
+ip_manage: 172.30.0.6
+ssh_port: 22
+username: paloalto
+password: paloalto
+device_type: paloalto
+
+INTERFACES:
+    - name: inside
+      addr: 10.0.0.1/8
+      description: InterfaceInterna
+    - name: outside
+      addr: 200.19.0.1/24
+      description: InterfaceExterna

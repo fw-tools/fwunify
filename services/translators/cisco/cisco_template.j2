@@ -38,7 +38,7 @@ no time-range {{name}}
 
 
 
-{%- elif 'nat' in intent_type %}
+{%- elif 'nat_1to1' in intent_type %}
 {%-     if 'insert' in apply %}
 object network {{ to }}
 host {{ to }}
@@ -83,6 +83,24 @@ policy-map global-policy
 no class-map global-class-{{ name }}
 clear configure access-list global_mpc
 clear conn
+{%-     endif %}
+{%- elif 'dst_route' in intent_type %}
+{%-     if 'insert' in apply %}
+route inside {{ to }} {{ gateway }}
+{%-     elif 'remove' in apply %}
+no route inside {{ to }} {{ gateway }}
+{%-     endif %}
+
+{%- elif 'nat_nto1' in intent_type %}
+{%-     if 'insert' in apply %}
+object network {{ name }}
+subnet {{ from }}
+nat (inside,outside) dynamic {{ to }}
+{%-     elif 'remove' in apply %}
+object network {{ name }}
+no nat dynamic {{ to }}
+exit
+no object network {{ name }}
 {%-     endif %}
 {%- endif %}
 !

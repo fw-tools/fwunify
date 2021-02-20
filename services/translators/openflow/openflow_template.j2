@@ -5,7 +5,7 @@ ovs-ofctl add-flow {{ hostname }} dl_type=0x800,priority={{ order }},{{ args }}a
 ovs-ofctl del-flows {{ hostname }} dl_type=0x800,{{ args }}
 {%-     endif %}
 
-{%- elif 'nat' in intent_type %}
+{%- elif 'nat_1to1' in intent_type %}
 {%-     if 'insert' in apply %}
 {%-         if from_port is defined %}
 ovs-ofctl --strict add-flow {{ hostname }} {{protocol}},nw_dst={{ from }},tp_dst={{ from_port }},actions=mod_nw_dst={{ to }},mod_tp_dst={{ to_port }}

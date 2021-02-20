@@ -18,6 +18,9 @@ nameko run iptables --broker amqp://guest:guest@localhost &
 cd ../openflow/
 nameko run openflow --broker amqp://guest:guest@localhost &
 
+cd ../paloalto/
+nameko run paloalto --broker amqp://guest:guest@localhost &
+
 cd ../../connectors/cisco_connector/
 nameko run cisco_connector --broker amqp://guest:guest@localhost &
 

@@ -18,6 +18,8 @@ def check_rule(dict_intent):
         file = 'src/log/nat_log'
     elif dict_intent['intent_type'] == 'traffic_shaping':
         file = 'src/log/ts_log'
+    else:
+        return 'OK'
     # check name
     if dict_intent['intent_type'] == 'acl' or dict_intent['intent_type'] == 'traffic_shaping':
         ctr = 0

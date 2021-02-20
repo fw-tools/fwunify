@@ -22,10 +22,16 @@ def check_ip_network(ip, network):
 def check_values(dict_intent):
     if dict_intent['intent_type'] == 'acl':
         parameters = ['from', 'to', 'rule', 'traffic', 'apply']
-    elif dict_intent['intent_type'] == 'nat11':
+    elif dict_intent['intent_type'] == 'nat_1to1':
         parameters = ['from', 'to', 'protocol', 'apply']
     elif dict_intent['intent_type'] == 'traffic_shaping':
         parameters = ['name', 'from', 'to', 'with', 'traffic', 'apply']
+    elif dict_intent['intent_type'] == 'dst_route':
+        parameters = ['from', 'to', 'apply']
+    elif dict_intent['intent_type'] == 'nat_nto1':
+        parameters = ['from', 'to', 'apply']
+    elif dict_intent['intent_type'] == 'url_filter':
+        parameters = ['name', 'from', 'to', 'rule', 'apply']
     else:
         return "IPTABLES TRANSLATOR: Intent type not supported"
     for parameter in parameters:
@@ -170,17 +176,56 @@ def process_traffic_shaping(dict_intent):
     return 'IPTABLES TRANSLATOR: Traffic shaping is not yet supported'
 
 
+def process_dst_route(dict_intent):
+    # loading YAML file with firewall settings
+    config = yaml_load('iptables_config.yml')
+    # loading and render template jinja2
+    for interface in config['INTERFACES']:
+        if check_ip_network(dict_intent['from'], interface['addr']):
+            dict_intent['interface'] = interface['name']
+    if 'interface' not in dict_intent:
+        return "IPTABLES TRANSLATOR: Unrecognized gateway"
+    dict_intent['to'] = dict_intent['to'] + '/' + str(IPAddress(dict_intent['to_mask']).netmask_bits())
+    file_loader = FileSystemLoader('.')
+    env = Environment(loader=file_loader)
+    template = env.get_template('iptables_template.j2')
+    output = template.render(dict_intent)
+    with ClusterRpcProxy(CONFIG) as rpc_connect:
+        rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
+                                              config['password'], config['device_type'], output)
+    return output
+
+
+def process_natn1(dict_intent):
+    # loading YAML file with firewall settings
+    config = yaml_load('iptables_config.yml')
+    # identifies interfaces
+    for interface in config['INTERFACES']:
+        if check_ip_network(dict_intent['to'], interface['addr']):
+            dict_intent['interface'] = interface['name']
+    if 'interface' not in dict_intent:
+        return "IPTABLES TRANSLATOR: Unrecognized gateway"
+    dict_intent['from'] = dict_intent['from'] + '/' + str(IPAddress(dict_intent['from_mask']).netmask_bits())
+    # loading and render template jinja2
+    file_loader = FileSystemLoader('.')
+    env = Environment(loader=file_loader)
+    template = env.get_template('iptables_template.j2')
+    output = template.render(dict_intent)
+    with ClusterRpcProxy(CONFIG) as rpc_connect:
+        rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
+                                              config['password'], config['device_type'], output)
+    return output
+
+
+def process_url_filter(dict_intent):
+    return 'IPTABLES TRANSLATOR: URL Filter is not yet supported'
+
+
 class IptablesService:
     """
         IPTABLES Service
         Microservice that translates the information sent by the api to commands applicable in IPTABLES
         Receive: this function receives a python dictionary, with at least the following information for each processing
-            For acl process:
-                ['from', 'to', 'rule', 'traffic', 'apply']
-            For nat11 process:
-               ['from', 'to', 'protocol', 'apply']
-            For traffic_shaping process:
-                ['name', 'from', 'to', 'with', 'traffic', 'apply']
         Return:
             - The microservice activates the application module via ssh and returns the result. If any incorrect
             information in the dictionary, the error message is returned
@@ -195,10 +240,16 @@ class IptablesService:
             if output is True:
                 if dict_intent['intent_type'] == 'acl':
                     return process_acl(dict_intent)
-                elif dict_intent['intent_type'] == 'nat11':
+                elif dict_intent['intent_type'] == 'nat_1to1':
                     return process_nat11(dict_intent)
                 elif dict_intent['intent_type'] == 'traffic_shaping':
                     return process_traffic_shaping(dict_intent)
+                elif dict_intent['intent_type'] == 'dst_route':
+                    return process_dst_route(dict_intent)
+                elif dict_intent['intent_type'] == 'nat_nto1':
+                    return process_natn1(dict_intent)
+                elif dict_intent['intent_type'] == 'url_filter':
+                    return process_url_filter(dict_intent)
             else:
                 return output
         else:

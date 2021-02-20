@@ -21,10 +21,16 @@ def check_ip_network(ip, network):
 def check_values(dict_intent):
     if dict_intent['intent_type'] == 'acl':
         parameters = ['from', 'to', 'rule', 'traffic', 'apply']
-    elif dict_intent['intent_type'] == 'nat11':
+    elif dict_intent['intent_type'] == 'nat_1to1':
         parameters = ['from', 'to', 'protocol', 'apply']
     elif dict_intent['intent_type'] == 'traffic_shaping':
         parameters = ['from', 'to', 'with', 'traffic', 'apply']
+    elif dict_intent['intent_type'] == 'dst_route':
+        parameters = ['from', 'to', 'apply']
+    elif dict_intent['intent_type'] == 'nat_nto1':
+        parameters = ['from', 'to', 'apply']
+    elif dict_intent['intent_type'] == 'url_filter':
+        parameters = ['name', 'from', 'to', 'rule', 'apply']
     else:
         return "OPENFLOW TRANSLATOR: Intent type not supported"
     for parameter in parameters:
@@ -201,9 +207,20 @@ def process_traffic_shaping(dict_intent):
     output = template.render(dict_intent)
     with ClusterRpcProxy(CONFIG) as rpc_connect:
         rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
-                                                 config['password'],
-                                                 config['device_type'], output, 'openflow')
+                                                 config['password'],config['device_type'], output, 'openflow')
     return output
+
+
+def process_dst_route(dict_intent):
+    return 'OPENFLOW TRANSLATOR: Route is not yet supported'
+
+
+def process_natn1(dict_intent):
+    return 'OPENFLOW TRANSLATOR: NAT Nto1 is not yet supported'
+
+
+def process_url_filter(dict_intent):
+    return 'OPENFLOW TRANSLATOR: URL Filter is not yet supported'
 
 
 class OpenflowService:
@@ -211,15 +228,10 @@ class OpenflowService:
         Openflow Service
         Microservice that translates the information sent by the api to commands applicable in Openflow devices
         Receive: this function receives a python dictionary, with at least the following information for each processing
-            For acl process:
-                ['from', 'to', 'rule', 'traffic', 'apply']
-            For nat11 process:
-                ['from', 'to', 'protocol', 'apply']
-            For traffic_shaping process:
-                ['from', 'to', 'for', 'with', 'traffic', 'apply']
         Return:
             - The microservice activates the application module via ssh and returns the result. If any incorrect
             information in the dictionary, the error message is returned
+        Translations for NAT1toN and Route have not yet been implemented
         """
     name = "openflow_translator"
     zipcode_rpc = RpcProxy('openflow_service_translator')
@@ -231,10 +243,16 @@ class OpenflowService:
             if output is True:
                 if dict_intent['intent_type'] == 'acl':
                     return process_acl(dict_intent)
-                elif dict_intent['intent_type'] == 'nat11':
+                elif dict_intent['intent_type'] == 'nat_1to1':
                     return process_nat11(dict_intent)
                 elif dict_intent['intent_type'] == 'traffic_shaping':
                     return process_traffic_shaping(dict_intent)
+                elif dict_intent['intent_type'] == 'dst_route':
+                    return process_dst_route(dict_intent)
+                elif dict_intent['intent_type'] == 'nat_nto1':
+                    return process_natn1(dict_intent)
+                elif dict_intent['intent_type'] == 'url_filter':
+                    return process_url_filter(dict_intent)
             else:
                 return output
         else:

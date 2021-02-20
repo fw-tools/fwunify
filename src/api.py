@@ -503,6 +503,185 @@ def process_intent_traffic_shaping(dict_intent, intent_type):
     return send_to_translate(dict_intent)
 
 
+def process_intent_dst_route(dict_intent, intent_type):
+    requires = ['from', 'to', 'add', 'del']
+    indices = list(dict_intent.keys())
+    required = check_parameters(requires, indices)
+    if required is not True:
+        return "ERROR: The following parameters are mandatory: " + str(required)
+    for parameter in indices:
+        if parameter == 'to':
+            if "endpoint('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                dict_intent[parameter] = value
+                result = identify_value(parameter, dict_intent[parameter])
+                if not result:
+                    return 'Not possible translate parameter "' + parameter + ': ' + dict_intent[parameter] + '"'
+                else:
+                    dict_intent[parameter] = result
+                    dict_intent['to_mask'] = '255.255.255.255'
+            elif "range('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                range, netmask = cidr_to_netmask(value)
+                dict_intent[parameter] = range
+                dict_intent[parameter + '_mask'] = netmask
+            else:
+                return 'Syntax error in parameter: ' + parameter
+        elif parameter == 'from':
+            if "gateway('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                dict_intent[parameter] = value
+                result = identify_value(parameter, dict_intent[parameter])
+                if not result:
+                    return 'Not possible translate parameter "' + parameter + ': ' + dict_intent[parameter] + '"'
+                else:
+                    dict_intent['gateway'] = result
+        elif parameter == 'add' or parameter == 'del':
+            devices = dict_intent[parameter].split(',')
+            value = []
+            for device in devices:
+                if "middlebox('" in device and "')" in device:
+                    value.append(re.search(r"'(.*)'", device).group(1))
+                else:
+                    return 'Error in parameter ' + parameter.upper() + '.'
+            dict_intent['devices'] = value
+            if parameter == 'add':
+                dict_intent['apply'] = 'insert'
+                dict_intent.pop('add')
+            else:
+                dict_intent['apply'] = 'remove'
+                dict_intent.pop('del')
+    return send_to_translate(dict_intent)
+
+
+def process_intent_natn1(dict_intent, intent_type):
+    requires = ['from', 'to', 'add', 'del']
+    indices = list(dict_intent.keys())
+    required = check_parameters(requires, indices)
+    if required is not True:
+        return "ERROR: The following parameters are mandatory: " + str(required)
+    for parameter in indices:
+        if parameter == 'from':
+            if "range('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                range, netmask = cidr_to_netmask(value)
+                dict_intent[parameter] = range
+                dict_intent[parameter + '_mask'] = netmask
+            else:
+                return 'Syntax error in parameter: ' + parameter
+        elif parameter == 'to':
+            if "endpoint('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                dict_intent[parameter] = value
+                result = identify_value(parameter, dict_intent[parameter])
+                if not result:
+                    return 'Not possible translate parameter "' + parameter + ': ' + dict_intent[parameter] + '"'
+                else:
+                    dict_intent[parameter] = result
+        elif parameter == 'add' or parameter == 'del':
+            devices = dict_intent[parameter].split(',')
+            value = []
+            for device in devices:
+                if "middlebox('" in device and "')" in device:
+                    value.append(re.search(r"'(.*)'", device).group(1))
+                else:
+                    return 'Error in parameter ' + parameter.upper() + '.'
+            dict_intent['devices'] = value
+            if parameter == 'add':
+                dict_intent['apply'] = 'insert'
+                dict_intent.pop('add')
+            else:
+                dict_intent['apply'] = 'remove'
+                dict_intent.pop('del')
+    return send_to_translate(dict_intent)
+
+
+def process_intent_url_filter(dict_intent, intent_type):
+    requires = ['name', 'from', 'to', 'allow', 'block', 'order', 'add', 'del']
+    indices = list(dict_intent.keys())
+    required = check_parameters(requires, indices)
+    if required is not True:
+        return "ERROR: The following parameters are mandatory: " + str(required)
+    for parameter in indices:
+        # parameter name
+        if parameter == 'name':
+            if "text('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                dict_intent[parameter] = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+            else:
+                return 'Syntax error in parameter: "' + parameter + '".'
+        # parameters from and to
+        elif parameter == 'from':
+            if "endpoint('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                dict_intent[parameter] = value
+                result = identify_value(parameter, dict_intent[parameter])
+                if not result:
+                    return 'Not possible translate parameter "' + parameter + ': ' + dict_intent[parameter] + '"'
+                else:
+                    dict_intent[parameter] = result
+            elif "range('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                range, netmask = cidr_to_netmask(value)
+                dict_intent[parameter] = range
+                dict_intent[parameter + '_mask'] = netmask
+            else:
+                return 'Syntax error in parameter: ' + parameter
+        elif parameter == 'to':
+            if "endpoint('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                dict_intent[parameter] = value
+            elif "category('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                dict_intent[parameter] = value
+        # parameters allow e block
+        elif parameter == 'allow' or parameter == 'block':
+            if "traffic('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                if value == 'all':
+                    dict_intent['traffic'] = 'all'
+                elif value == 'icmp':
+                    dict_intent['traffic'] = 'icmp'
+                else:
+                    result = identify_value(parameter, value)
+                    if result is False:
+                        return 'Error in parameter ' + parameter.upper() + ': "' + value + '"'
+                    else:
+                        dict_intent['traffic'] = result
+            else:
+                return 'Syntax error in parameter: "' + parameter + '".'
+            if parameter == 'allow':
+                dict_intent['rule'] = 'allow'
+                dict_intent.pop('allow')
+            else:
+                dict_intent['rule'] = 'block'
+                dict_intent.pop('block')
+        # parameter order
+        elif parameter == 'order':
+            if "before('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                dict_intent['before'] = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+            elif "after('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+                dict_intent['after'] = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+            else:
+                return 'Syntax error in parameter: "' + parameter + '".'
+            dict_intent.pop('order')
+        elif parameter == 'add' or parameter == 'del':
+            devices = dict_intent[parameter].split(',')
+            value = []
+            for device in devices:
+                if "middlebox('" in device and "')" in device:
+                    value.append(re.search(r"'(.*)'", device).group(1))
+                else:
+                    return 'Error in parameter ' + parameter.upper() + '.'
+            dict_intent['devices'] = value
+            if parameter == 'add':
+                dict_intent['apply'] = 'insert'
+                dict_intent.pop('add')
+            else:
+                dict_intent['apply'] = 'remove'
+                dict_intent.pop('del')
+    return send_to_translate(dict_intent)
+
+
 def send_to_translate(dict_intent):
     result = "\n"
     flag = 0
@@ -559,7 +738,7 @@ def process_intent(intent, role):
             return process_intent_acl(final_intent, intent_type)
         else:
             return "User role " + role.upper() + " can't manipulate ACL intents"
-    elif intent_type == 'nat11':
+    elif intent_type == 'nat_1to1':
         if role == 'super-admin' or role == 'admin':
             return process_intent_nat11(final_intent, intent_type)
         else:
@@ -569,6 +748,22 @@ def process_intent(intent, role):
             return process_intent_traffic_shaping(final_intent, intent_type)
         else:
             return "User role " + role.upper() + " can't manipulate Traffic Shaping intents"
+    elif intent_type == 'dst_route':
+        if role == 'super-admin':
+            return process_intent_dst_route(final_intent, intent_type)
+        else:
+            return "User role " + role.upper() + " can't manipulate Traffic Shaping intents"
+    elif intent_type == 'nat_nto1':
+        if role == 'super-admin':
+            return process_intent_natn1(final_intent, intent_type)
+        else:
+            return "User role " + role.upper() + " can't manipulate Traffic Shaping intents"
+    elif intent_type == 'url_filter':
+        if role == 'super-admin':
+            return process_intent_url_filter(final_intent, intent_type)
+        else:
+            return "User role " + role.upper() + " can't manipulate Traffic Shaping intents"
+
     else:
         return "Unrecognized intent type, see /help"
 

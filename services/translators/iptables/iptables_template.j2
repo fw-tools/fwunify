@@ -5,7 +5,7 @@ iptables -I {{ chain }} {{ order }} -s {{ from }} -d {{ to }} -p {{ traffic }} {
 iptables -D {{ chain }} -s {{ from }} -d {{ to }} -p {{ traffic }} {{ traffic_port }} -j {{ rule }}
 {%-     endif %}
 
-{%- elif 'nat' in intent_type %}
+{%- elif 'nat_1to1' in intent_type %}
 {%-     if 'insert' in apply %}
 {%-         if from_port is defined %}
 iptables -t nat -A PREROUTING -d {{ from }} -p {{ protocol }} --dport {{ from_port }} -j DNAT --to-destination {{ to }}:{{ to_port}}
@@ -23,4 +23,17 @@ iptables -t nat -D PREROUTING -d {{ from }} -j DNAT --to-destination {{ to }}
 iptables -t nat -D POSTROUTING -s {{ to }} -j SNAT --to-source {{ from }}
 {%-         endif%}
 {%-     endif%}
+{%- elif 'dst_route' in intent_type %}
+{%-     if 'insert' in apply %}
+ip route add {{ to }} via {{ gateway }} dev {{interface}}
+{%-     elif 'remove' in apply %}
+ip route del {{ to }}
+{%-     endif%}
+{%- elif 'nat_nto1' in intent_type %}
+{%-     if 'insert' in apply %}
+iptables -A POSTROUTING -s {{ from }} -o {{ interface }} -j SNAT --to-source {{ to }}
+{%-     elif 'remove' in apply %}
+iptables -D POSTROUTING -s {{ from }} -o {{ interface }} -j SNAT --to-source {{ to }}
+{%-     endif%}
+
 {%- endif %}

@@ -1,0 +1,4 @@
+define intent nat_nto1:
+  from  range('10.0.0.0/24')
+  to    endpoint('200.19.0.100')
+  add	middlebox('iptables-1'),middlebox('cisco-1')
