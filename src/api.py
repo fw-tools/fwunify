@@ -8,7 +8,7 @@ from nameko.standalone.rpc import ClusterRpcProxy
 from flask_httpauth import HTTPBasicAuth
 from python_json_config import ConfigBuilder
 from passlib.hash import pbkdf2_sha256
-from validation import check_rule, remove_error_rule
+from PyFwConflict import check_rule, remove_error_rule
 
 auth = HTTPBasicAuth()
 
