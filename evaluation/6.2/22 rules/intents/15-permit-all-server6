@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-server61')
+   from    endpoint('all')
+   to      endpoint('200.19.1.61')
+   allow   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

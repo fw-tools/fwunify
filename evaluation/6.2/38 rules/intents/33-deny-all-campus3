@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('deny-all-campus3')
+   from    endpoint('all')
+   to      range('10.100.0.0/16')
+   block   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1')

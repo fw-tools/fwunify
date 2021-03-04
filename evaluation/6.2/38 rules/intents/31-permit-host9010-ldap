@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-host9010-ldap')
+   from    endpoint('10.0.90.10')
+   to      endpoint('200.19.0.12 ')
+   allow   traffic('tcp/3389')
+   order   before('all')
+   add     middlebox('cisco-1')

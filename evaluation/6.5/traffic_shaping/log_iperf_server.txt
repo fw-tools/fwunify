@@ -1,0 +1,33 @@
+user@server-1:~# iperf -u -s -p 5555 -i 5
+------------------------------------------------------------
+Server listening on UDP port 5555
+Receiving 1470 byte datagrams
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[ 11] local 200.19.0.100 port 5555 connected with 10.0.0.10 port 44288
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[ 11]  0.0- 5.0 sec   639 MBytes  1.07 Gbits/sec   0.000 ms  668/456545 (0.15%)
+[ 11]  5.0-10.0 sec   639 MBytes  1.07 Gbits/sec   0.000 ms  367/456522 (0.08%)
+[ 11] 10.0-15.0 sec   640 MBytes  1.07 Gbits/sec   0.000 ms    0/456523 (0%)
+[ 11] 15.0-20.0 sec   640 MBytes  1.07 Gbits/sec   0.000 ms  209/456523 (0.046%)
+[ 11] 20.0-25.0 sec   281 MBytes   472 Mbits/sec   0.001 ms 255963/456524 (56%)
+[ 11] 25.0-30.0 sec  58.5 MBytes  98.1 Mbits/sec   0.001 ms 414807/456530 (91%)
+[ 11] 30.0-35.0 sec  58.5 MBytes  98.1 Mbits/sec   0.000 ms 414798/456520 (91%)
+[ 11] 35.0-40.0 sec  58.5 MBytes  98.1 Mbits/sec   0.000 ms 414798/456520 (91%)
+[ 11] 40.0-45.0 sec  58.5 MBytes  98.1 Mbits/sec   0.000 ms 414807/456530 (91%)
+[ 11] 45.0-50.0 sec   386 MBytes   648 Mbits/sec   0.000 ms 180931/456514 (40%)
+[ 11] 50.0-55.0 sec   639 MBytes  1.07 Gbits/sec   0.000 ms  656/456523 (0.14%)
+[ 11] 55.0-60.0 sec   640 MBytes  1.07 Gbits/sec   0.000 ms    0/456522 (0%)
+[ 11] 60.0-65.0 sec   640 MBytes  1.07 Gbits/sec   0.000 ms    0/456523 (0%)
+[ 11] 65.0-70.0 sec   639 MBytes  1.07 Gbits/sec   0.001 ms  499/456523 (0.11%)
+[ 11] 70.0-75.0 sec   290 MBytes   486 Mbits/sec   0.000 ms 249710/456524 (55%)
+[ 11] 75.0-80.0 sec  58.5 MBytes  98.1 Mbits/sec   0.000 ms 414807/456530 (91%)
+[ 11] 80.0-85.0 sec  58.5 MBytes  98.1 Mbits/sec   0.000 ms 414798/456520 (91%)
+[ 11] 85.0-90.0 sec  58.5 MBytes  98.1 Mbits/sec   0.000 ms 414798/456520 (91%)
+[ 11] 90.0-95.0 sec  58.5 MBytes  98.1 Mbits/sec   0.000 ms 414807/456530 (91%)
+[ 11] 95.0-100.0 sec   406 MBytes   681 Mbits/sec   0.000 ms 166870/456513 (37%)
+[ 11] 100.0-105.0 sec   640 MBytes  1.07 Gbits/sec   0.000 ms  288/456523 (0.063%)
+[ 11] 105.0-110.0 sec   640 MBytes  1.07 Gbits/sec   0.000 ms    0/456523 (0%)
+[ 11] 110.0-115.0 sec   640 MBytes  1.07 Gbits/sec   0.000 ms  153/456523 (0.034%)
+[ 11] 115.0-120.0 sec   640 MBytes  1.07 Gbits/sec   0.000 ms  127/456523 (0.028%)
+user@server-1:~# 

@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('drop-net-h20-mysql')
+   from    range('10.0.0.0/24')
+   to      endpoint('200.19.0.10')
+   block   traffic('tcp/3306')
+   order   after('permit-h10-h20-mysql')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

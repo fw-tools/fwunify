@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-all-ssh')
+   from    endpoint('all')
+   to      endpoint('all')
+   allow   traffic('tcp/22')
+   order   after('all')
+   add	middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

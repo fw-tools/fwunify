@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-covid19-local-5672')
+   from    endpoint('covid19-hs.unihacker.club')
+   to      endpoint('localhost')
+   allow   traffic('tcp/5672')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

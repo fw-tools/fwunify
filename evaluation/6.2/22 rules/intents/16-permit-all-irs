@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-irs')
+   from    endpoint('all')
+   to      range('161.148.0.0/16')
+   allow   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

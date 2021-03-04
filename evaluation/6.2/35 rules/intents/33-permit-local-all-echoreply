@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-local-all-echoreply')
+   from    endpoint('localhost')
+   to      endpoint('all')
+   allow   traffic('echo-reply')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

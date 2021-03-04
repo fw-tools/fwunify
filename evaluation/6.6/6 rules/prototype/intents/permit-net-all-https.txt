@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-net-all-https')
+   from    range('10.0.0.0/24')
+   to      endpoint('all')
+   allow   traffic('https')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

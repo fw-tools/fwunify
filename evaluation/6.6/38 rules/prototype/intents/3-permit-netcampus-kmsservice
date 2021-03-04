@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-netcampus-kmsservice')
+   from    range('10.0.0.0/16')
+   to      endpoint('all')
+   allow   traffic('tcp/1688')
+   order   before('all')
+   add     middlebox('cisco-1')

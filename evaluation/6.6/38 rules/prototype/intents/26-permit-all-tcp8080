@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-tcp8080')
+   from    endpoint('all')
+   to      endpoint('all')
+   allow   traffic('tcp/8080')
+   order   before('all')
+   add     middlebox('cisco-1')

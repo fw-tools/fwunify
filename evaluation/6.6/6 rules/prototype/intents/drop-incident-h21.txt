@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('drop-incident-h21')
+   from    endpoint('all')
+   to      endpoint('200.19.0.20')
+   block   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('deny-coinhide')
+   from    endpoint('all')
+   to      range('91.0.0.0/8')
+   drop    traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

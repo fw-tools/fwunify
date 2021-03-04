@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-store10-all')
+   from    range('10.10.0.0/16')
+   to      endpoint('all')
+   allow   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

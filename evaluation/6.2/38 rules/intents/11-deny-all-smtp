@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('deny-all-smtp')
+   from    endpoint('all')
+   to      endpoint('all')
+   block   traffic('smtp')
+   order   before('all')
+   add     middlebox('cisco-1')

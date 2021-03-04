@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-host9010-teamviewer')
+   from    endpoint('10.0.90.10')
+   to      endpoint('all')
+   allow   traffic('tcp/5938')
+   order   before('all')
+   add     middlebox('cisco-1')

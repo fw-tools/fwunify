@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-proxyserver')
+   from    endpoint('all')
+   to      endpoint('200.19.0.155')
+   allow   traffic('tcp/3128')
+   order   before('all')
+   add     middlebox('cisco-1')

@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-h10-h20-mysql')
+   from    endpoint('10.0.0.10')
+   to      endpoint('200.19.0.10')
+   allow   traffic('tcp/3306')
+   order   before('drop-all-all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

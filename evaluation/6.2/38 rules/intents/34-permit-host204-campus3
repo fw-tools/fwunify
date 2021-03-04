@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-host204-campus2')
+   from    endpoint('10.0.20.4')
+   to      range('10.100.0.0/16')
+   allow   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1')

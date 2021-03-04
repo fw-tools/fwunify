@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-http')
+   from    endpoint('all')
+   to      endpoint('all')
+   allow   traffic('http')
+   order   before('all')
+   add     middlebox('cisco-1')

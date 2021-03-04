@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-host9010-db')
+   from    endpoint('10.0.90.10')
+   to      endpoint('10.100.0.103')
+   allow   traffic('tcp/50000')
+   order   before('all')
+   add     middlebox('cisco-1')

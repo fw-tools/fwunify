@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-dmz')
+   from    endpoint('all')
+   to      range('200.19.0.0/24')
+   allow   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

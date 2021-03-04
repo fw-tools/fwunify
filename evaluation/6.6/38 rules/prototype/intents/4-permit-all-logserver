@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-logserver')
+   from    endpoint('all')
+   to      endpoint('200.19.0.155')
+   allow   traffic('syslog')
+   order   before('all')
+   add     middlebox('cisco-1')

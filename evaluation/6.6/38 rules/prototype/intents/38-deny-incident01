@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('deny-incident01')
+   from    endpoint('all')
+   to      endpoint('85.243.251.19')
+   block   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1')

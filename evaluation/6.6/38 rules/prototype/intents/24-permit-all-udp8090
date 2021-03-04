@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-udp8090')
+   from    endpoint('all')
+   to      endpoint('all')
+   allow   traffic('udp/8090')
+   order   before('all')
+   add     middlebox('cisco-1')

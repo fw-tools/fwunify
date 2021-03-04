@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-host110-server60')
+   from    endpoint('10.0.0.110')
+   to      endpoint('200.19.1.60')
+   allow   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

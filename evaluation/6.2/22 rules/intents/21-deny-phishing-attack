@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('deny-phishing-attack')
+   from    endpoint('all')
+   to      range('8.210.65.0/24')
+   drop   traffic('all')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

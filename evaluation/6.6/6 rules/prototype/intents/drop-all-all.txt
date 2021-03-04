@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('drop-all-all')
+   from    endpoint('all')
+   to      endpoint('all')
+   block   traffic('all')
+   order   after('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

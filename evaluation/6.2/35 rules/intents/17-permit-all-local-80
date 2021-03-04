@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-local-80')
+   from    endpoint('all')
+   to      endpoint('localhost')
+   allow   traffic('tcp/80')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

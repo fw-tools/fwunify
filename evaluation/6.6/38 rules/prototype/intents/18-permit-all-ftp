@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-ftp')
+   from    endpoint('all')
+   to      endpoint('all')
+   allow   traffic('ftp')
+   order   before('all')
+   add     middlebox('cisco-1')

@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-local-all-587')
+   from    endpoint('localhost')
+   to      endpoint('all')
+   block   traffic('tcp/587')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

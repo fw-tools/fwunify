@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-netcampus-voipserver')
+   from    range('10.0.0.0/16')
+   to      endpoint('200.19.0.111')
+   allow   traffic('udp/5060')
+   order   before('all')
+   add     middlebox('cisco-1')

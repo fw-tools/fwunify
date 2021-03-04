@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-matlab')
+   from    endpoint('all')
+   to      endpoint('all')
+   allow   traffic('tcp/3456')
+   order   before('all')
+   add     middlebox('cisco-1')

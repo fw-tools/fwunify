@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-all-udp137')
+   from    endpoint('all')
+   to      endpoint('all')
+   allow   traffic('udp/137')
+   order   after('all')
+   add	middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

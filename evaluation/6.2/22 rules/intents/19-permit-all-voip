@@ -1,0 +1,7 @@
+define intent acl:
+   name    text('permit-all-voip')
+   from    endpoint('all')
+   to      endpoint('200.19.1.100')
+   allow   traffic('udp/5060')
+   order   before('all')
+   add     middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

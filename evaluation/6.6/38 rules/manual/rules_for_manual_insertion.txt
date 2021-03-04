@@ -1,0 +1,76 @@
+access-list inside_access_in line 1 extended deny ip any host 85.243.251.19
+access-group inside_access_in in interface inside
+access-list inside_access_in line 2 extended deny ip any host 106.184.21.218
+access-group inside_access_in in interface inside
+access-list inside_access_in line 3 extended deny ip any host 37.140.235.126
+access-group inside_access_in in interface inside
+access-list inside_access_in line 4 extended deny ip any host 37.140.235.132
+access-group inside_access_in in interface inside
+access-list inside_access_in line 5 extended permit ip host 10.0.20.4 10.100.0.0 255.255.255.0
+access-group inside_access_in in interface inside
+access-list inside_access_in line 6 extended deny ip any 10.100.0.0 255.255.255.0
+access-group inside_access_in in interface inside
+access-list inside_access_in line 7 extended permit tcp host 10.0.90.10 host 200.19.0.12 eq ldap
+access-group inside_access_in in interface inside
+access-list inside_access_in line 8 extended permit tcp host 10.0.90.10 host 10.100.0.103 eq 50000
+access-group inside_access_in in interface inside
+access-list inside_access_in line 9 extended permit tcp host 10.0.90.10 any eq 5938
+access-group inside_access_in in interface inside
+access-list inside_access_in line 10 extended deny ip 10.0.90.0 255.255.255.0 any
+access-group inside_access_in in interface inside
+access-list inside_access_in line 11 extended permit tcp any any eq https
+access-group inside_access_in in interface inside
+access-list inside_access_in line 12 extended permit tcp any any eq http
+access-group inside_access_in in interface inside
+access-list inside_access_in line 13 extended permit tcp any any eq 8080
+access-group inside_access_in in interface inside
+access-list inside_access_in line 14 extended permit tcp any any eq 8090
+access-group inside_access_in in interface inside
+access-list inside_access_in line 15 extended permit udp any any eq 8090
+access-group inside_access_in in interface inside
+access-list inside_access_in line 16 extended permit tcp any any eq 6500
+access-group inside_access_in in interface inside
+access-list inside_access_in line 17 extended permit tcp any any eq 8443
+access-group inside_access_in in interface inside
+access-list inside_access_in line 18 extended permit tcp any any eq 7443
+access-group inside_access_in in interface inside
+access-list inside_access_in line 19 extended permit tcp any any eq 9191
+access-group inside_access_in in interface inside
+access-list inside_access_in line 20 extended permit tcp any any eq 3001
+access-group inside_access_in in interface inside
+access-list inside_access_in line 21 extended permit tcp any any eq 21
+access-group inside_access_in in interface inside
+access-list inside_access_in line 22 extended permit tcp 10.0.20.0 255.255.255.0 host 10.100.0.50 eq 3389
+access-group inside_access_in in interface inside
+access-list inside_access_in line 23 extended permit tcp 10.0.30.0 255.255.255.0 host 10.100.0.50 eq 3389
+access-group inside_access_in in interface inside
+access-list inside_access_in line 24 extended permit tcp 10.0.40.0 255.255.255.0 host 10.100.0.50 eq 3389
+access-group inside_access_in in interface inside
+access-list inside_access_in line 25 extended permit ip 10.0.60.0 255.255.255.0 any
+access-group inside_access_in in interface inside
+access-list inside_access_in line 26 extended permit tcp host 10.0.10.254 host 200.19.0.50 eq 1812
+access-group inside_access_in in interface inside
+access-list inside_access_in line 27 extended permit udp host 10.0.10.254 host 200.19.0.50 eq 1812
+access-group inside_access_in in interface inside
+access-list inside_access_in line 28 extended deny tcp any any eq smtp
+access-group inside_access_in in interface inside
+access-list inside_access_in line 29 extended permit udp 10.0.0.0 255.255.0.0 host 200.19.0.111 eq 5060
+access-group inside_access_in in interface inside
+access-list inside_access_in line 30 extended permit tcp any any eq 1935
+access-group inside_access_in in interface inside
+access-list inside_access_in line 31 extended permit udp 10.0.0.0 255.255.0.0 host 10.100.0.33 eq 4040
+access-group inside_access_in in interface inside
+access-list inside_access_in line 32 extended permit tcp 10.0.0.0 255.255.0.0 host 10.100.0.33 eq 4040
+access-group inside_access_in in interface inside
+access-list inside_access_in line 33 extended permit tcp any host 200.19.0.155 eq 3128
+access-group inside_access_in in interface inside
+access-list inside_access_in line 34 extended permit tcp 10.0.0.0 255.255.0.0 any eq 22
+access-group inside_access_in in interface inside
+access-list inside_access_in line 35 extended permit udp any host 200.19.0.155 eq 514
+access-group inside_access_in in interface inside
+access-list inside_access_in line 36 extended permit tcp 10.0.0.0 255.255.0.0 any eq 1688
+access-group inside_access_in in interface inside
+access-list inside_access_in line 37 extended permit tcp any any eq 3456
+access-group inside_access_in in interface inside
+access-list inside_access_in line 38 extended deny ip any any
+access-group inside_access_in in interface inside

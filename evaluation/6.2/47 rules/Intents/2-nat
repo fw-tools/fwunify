@@ -1,0 +1,4 @@
+define intent nat11:
+  from	endpoint('200.19.0.196')
+  to	endpoint('10.0.3.190')
+  add	middlebox('cisco-1'),middlebox('iptables-1'),middlebox('openflow-1')

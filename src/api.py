@@ -333,7 +333,7 @@ def process_intent_nat11(dict_intent, intent_type):
             else:
                 return 'Syntax error in parameter: '+parameter
         elif parameter == 'for':
-            if "flow('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
+            if "port('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
                 value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
                 protocol, src_port, dst_port = value.split('|')
                 if "protocol:" in protocol and "src_port:" in src_port and "dst_port:" in dst_port:
