@@ -75,7 +75,10 @@ def search_in_arq(value, path):
 def identify_value(tag, value):
     tag_status_ok = False
     if tag == 'from' or tag == 'to':
-        if is_valid_ip(value) or value == 'all':
+        if is_valid_ip(value):
+            tag_status_ok = True
+        if value == 'any':
+            value = 'all'
             tag_status_ok = True
         if not tag_status_ok:
             result, _ = search_in_arq(value, '/etc/hosts')
@@ -171,13 +174,17 @@ def process_intent_acl(dict_intent, intent_type):
                 range, netmask = cidr_to_netmask(value)
                 dict_intent[parameter] = range
                 dict_intent[parameter+'_mask'] = netmask
+            elif "any" in dict_intent[parameter]:
+                dict_intent[parameter] = 'all'
+                print('aaaaaa')
             else:
+                print(dict_intent[parameter])
                 return 'Syntax error in parameter: '+parameter
         # parameters allow e block
         elif parameter == 'allow' or parameter == 'block':
             if "traffic('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
                 value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
-                if value == 'all':
+                if value == 'any':
                     dict_intent['traffic'] = 'all'
                 elif value == 'icmp':
                     dict_intent['traffic'] = 'icmp'
@@ -210,31 +217,29 @@ def process_intent_acl(dict_intent, intent_type):
                 return 'Syntax error in parameter: "' + parameter + '".'
         # parameters add and del
         elif parameter == 'add' or parameter == 'del':
-            if 'firewalls' in dict_intent[parameter] or 'middleboxes' in dict_intent[parameter]:
-                list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
-                list_firewall = list_firewall.replace("'", "")
-                dict_intent['devices'] = list_firewall.split(',')
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
-                else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
-            else:
-                devices = dict_intent[parameter].split(',')
-                value = []
-                for device in devices:
-                    if "middlebox('" in device and "')" in device or "firewall('" in device and "')" in device:
-                        value.append(re.search(r"'(.*)'", device).group(1))
+            if 'firewall' in dict_intent[parameter] or 'middlebox' in dict_intent[parameter]:
+                if ',' in dict_intent[parameter]:
+                    list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                    list_firewall = list_firewall.replace("'", "")
+                    dict_intent['devices'] = list_firewall.split(',')
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
                     else:
-                        return 'Error in parameter ' + parameter.upper() + '.'
-                dict_intent['devices'] = value
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
                 else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
+                    value = []
+                    value.append(re.search(r"'(.*)'", dict_intent[parameter]).group(1))
+                    dict_intent['devices'] = value
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
+                    else:
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
+            else:
+                return 'Error in parameter ' + parameter.upper() + '.'
         # parameter description
         elif parameter == 'description':
             if "text('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
@@ -344,32 +349,29 @@ def process_intent_nat11(dict_intent, intent_type):
                     return 'Flow composition error in parameter: '+parameter
             dict_intent.pop('for')
         elif parameter == 'add' or parameter == 'del':
-            if 'firewalls' in dict_intent[parameter] or 'middleboxes' in dict_intent[parameter]:
-                list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
-                list_firewall = list_firewall.replace("'", "")
-                dict_intent['devices'] = list_firewall.split(',')
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
-                else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
-            else:
-                devices = dict_intent[parameter].split(',')
-                value = []
-                for device in devices:
-                    if "middlebox('" in device and "')" in device or "firewall('" in device and "')" in device:
-                        value.append(re.search(r"'(.*)'", device).group(1))
+            if 'firewall' in dict_intent[parameter] or 'middlebox' in dict_intent[parameter]:
+                if ',' in dict_intent[parameter]:
+                    list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                    list_firewall = list_firewall.replace("'", "")
+                    dict_intent['devices'] = list_firewall.split(',')
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
                     else:
-                        return 'Error in parameter ' + parameter.upper() + '.'
-                dict_intent['devices'] = value
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
                 else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
-
+                    value = []
+                    value.append(re.search(r"'(.*)'", dict_intent[parameter]).group(1))
+                    dict_intent['devices'] = value
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
+                    else:
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
+            else:
+                return 'Error in parameter ' + parameter.upper() + '.'
     return send_to_translate(dict_intent)
 
 
@@ -401,6 +403,8 @@ def process_intent_traffic_shaping(dict_intent, intent_type):
                 range, netmask = cidr_to_netmask(value)
                 dict_intent[parameter] = range
                 dict_intent[parameter + '_mask'] = netmask
+            elif dict_intent[parameter] == 'any':
+                dict_intent[parameter] = 'all'
             else:
                 return 'Syntax error in parameter: ' + parameter
         elif parameter == 'for':
@@ -437,31 +441,30 @@ def process_intent_traffic_shaping(dict_intent, intent_type):
             if 'enable' not in dict_intent[parameter] and 'disable' not in dict_intent[parameter]:
                 return 'Syntax error in parameter: "' + parameter + '".'
         elif parameter == 'add' or parameter == 'del':
-            if 'firewalls' in dict_intent[parameter] or 'middleboxes' in dict_intent[parameter]:
-                list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
-                list_firewall = list_firewall.replace("'", "")
-                dict_intent['devices'] = list_firewall.split(',')
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
-                else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
-            else:
-                devices = dict_intent[parameter].split(',')
-                value = []
-                for device in devices:
-                    if "middlebox('" in device and "')" in device or "firewall('" in device and "')" in device:
-                        value.append(re.search(r"'(.*)'", device).group(1))
+            if 'firewall' in dict_intent[parameter] or 'middlebox' in dict_intent[parameter]:
+                if ',' in dict_intent[parameter]:
+                    list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                    list_firewall = list_firewall.replace("'", "")
+                    dict_intent['devices'] = list_firewall.split(',')
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
                     else:
-                        return 'Error in parameter ' + parameter.upper() + '.'
-                dict_intent['devices'] = value
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
                 else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
+                    value = []
+                    value.append(re.search(r"'(.*)'", dict_intent[parameter]).group(1))
+                    dict_intent['devices'] = value
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
+                    else:
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
+            else:
+                return 'Error in parameter ' + parameter.upper() + '.'
+
         # parameter description
         elif parameter == 'description':
             if "text('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
@@ -570,31 +573,29 @@ def process_intent_dst_route(dict_intent, intent_type):
                 else:
                     dict_intent['gateway'] = result
         elif parameter == 'add' or parameter == 'del':
-            if 'firewalls' in dict_intent[parameter] or 'middleboxes' in dict_intent[parameter]:
-                list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
-                list_firewall = list_firewall.replace("'", "")
-                dict_intent['devices'] = list_firewall.split(',')
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
-                else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
-            else:
-                devices = dict_intent[parameter].split(',')
-                value = []
-                for device in devices:
-                    if "middlebox('" in device and "')" in device or "firewall('" in device and "')" in device:
-                        value.append(re.search(r"'(.*)'", device).group(1))
+            if 'firewall' in dict_intent[parameter] or 'middlebox' in dict_intent[parameter]:
+                if ',' in dict_intent[parameter]:
+                    list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                    list_firewall = list_firewall.replace("'", "")
+                    dict_intent['devices'] = list_firewall.split(',')
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
                     else:
-                        return 'Error in parameter ' + parameter.upper() + '.'
-                dict_intent['devices'] = value
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
                 else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
+                    value = []
+                    value.append(re.search(r"'(.*)'", dict_intent[parameter]).group(1))
+                    dict_intent['devices'] = value
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
+                    else:
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
+            else:
+                return 'Error in parameter ' + parameter.upper() + '.'
     return send_to_translate(dict_intent)
 
 
@@ -623,31 +624,29 @@ def process_intent_natn1(dict_intent, intent_type):
                 else:
                     dict_intent[parameter] = result
         elif parameter == 'add' or parameter == 'del':
-            if 'firewalls' in dict_intent[parameter] or 'middleboxes' in dict_intent[parameter]:
-                list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
-                list_firewall = list_firewall.replace("'", "")
-                dict_intent['devices'] = list_firewall.split(',')
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
-                else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
-            else:
-                devices = dict_intent[parameter].split(',')
-                value = []
-                for device in devices:
-                    if "middlebox('" in device and "')" in device or "firewall('" in device and "')" in device:
-                        value.append(re.search(r"'(.*)'", device).group(1))
+            if 'firewall' in dict_intent[parameter] or 'middlebox' in dict_intent[parameter]:
+                if ',' in dict_intent[parameter]:
+                    list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                    list_firewall = list_firewall.replace("'", "")
+                    dict_intent['devices'] = list_firewall.split(',')
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
                     else:
-                        return 'Error in parameter ' + parameter.upper() + '.'
-                dict_intent['devices'] = value
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
                 else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
+                    value = []
+                    value.append(re.search(r"'(.*)'", dict_intent[parameter]).group(1))
+                    dict_intent['devices'] = value
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
+                    else:
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
+            else:
+                return 'Error in parameter ' + parameter.upper() + '.'
     return send_to_translate(dict_intent)
 
 
@@ -679,6 +678,8 @@ def process_intent_url_filter(dict_intent, intent_type):
                 range, netmask = cidr_to_netmask(value)
                 dict_intent[parameter] = range
                 dict_intent[parameter + '_mask'] = netmask
+            elif dict_intent[parameter] == 'any':
+                dict_intent[parameter] = 'all'
             else:
                 return 'Syntax error in parameter: ' + parameter
         elif parameter == 'to':
@@ -688,6 +689,8 @@ def process_intent_url_filter(dict_intent, intent_type):
             elif "category('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
                 value = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
                 dict_intent[parameter] = value
+            elif dict_intent[parameter] == 'any':
+                dict_intent[parameter] = 'all'
         # parameters allow e block
         elif parameter == 'allow' or parameter == 'block':
             if "traffic('" in dict_intent[parameter] and "')" in dict_intent[parameter]:
@@ -720,31 +723,29 @@ def process_intent_url_filter(dict_intent, intent_type):
                 return 'Syntax error in parameter: "' + parameter + '".'
             dict_intent.pop('order')
         elif parameter == 'add' or parameter == 'del':
-            if 'firewalls' in dict_intent[parameter] or 'middleboxes' in dict_intent[parameter]:
-                list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
-                list_firewall = list_firewall.replace("'", "")
-                dict_intent['devices'] = list_firewall.split(',')
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
-                else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
-            else:
-                devices = dict_intent[parameter].split(',')
-                value = []
-                for device in devices:
-                    if "middlebox('" in device and "')" in device or "firewall('" in device and "')" in device:
-                        value.append(re.search(r"'(.*)'", device).group(1))
+            if 'firewall' in dict_intent[parameter] or 'middlebox' in dict_intent[parameter]:
+                if ',' in dict_intent[parameter]:
+                    list_firewall = re.search(r"'(.*)'", dict_intent[parameter]).group(1)
+                    list_firewall = list_firewall.replace("'", "")
+                    dict_intent['devices'] = list_firewall.split(',')
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
                     else:
-                        return 'Error in parameter ' + parameter.upper() + '.'
-                dict_intent['devices'] = value
-                if parameter == 'add':
-                    dict_intent['apply'] = 'insert'
-                    dict_intent.pop('add')
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
                 else:
-                    dict_intent['apply'] = 'remove'
-                    dict_intent.pop('del')
+                    value = []
+                    value.append(re.search(r"'(.*)'", dict_intent[parameter]).group(1))
+                    dict_intent['devices'] = value
+                    if parameter == 'add':
+                        dict_intent['apply'] = 'insert'
+                        dict_intent.pop('add')
+                    else:
+                        dict_intent['apply'] = 'remove'
+                        dict_intent.pop('del')
+            else:
+                return 'Error in parameter ' + parameter.upper() + '.'
     return send_to_translate(dict_intent)
 
 

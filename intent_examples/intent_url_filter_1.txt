@@ -2,6 +2,6 @@ define intent url_filter:
   name		text('url-socialmedia')
   from		range('10.0.0.0/24')
   to		category('social-media')
-  order		before('all')
-  allow		traffic('all')
+  order		before('all-intents')
+  allow		traffic('any')
   add		middlebox('paloalto-1')

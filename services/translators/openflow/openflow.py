@@ -51,7 +51,7 @@ def define_order(dict_intent):
     with open(file) as archive:
         if dict_intent['apply'] == 'insert':
             if 'after' in dict_intent:
-                if dict_intent['after'] == 'all':
+                if dict_intent['after'] == 'all-intents':
                     for line_num, l in enumerate(archive, 0):
                         line = line_num
                     response = 65535 - line
@@ -63,7 +63,7 @@ def define_order(dict_intent):
                             line = line_num + 1
                             response = 65535 - line_num
             elif 'before' in dict_intent:
-                if dict_intent['before'] == 'all':
+                if dict_intent['before'] == 'all-intents':
                     line = 1
                     response = 65535
                 else:
@@ -207,7 +207,8 @@ def process_traffic_shaping(dict_intent):
     output = template.render(dict_intent)
     with ClusterRpcProxy(CONFIG) as rpc_connect:
         rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
-                                                 config['password'],config['device_type'], output, 'openflow')
+                                                 config['password'],
+                                                 config['device_type'], output, 'openflow')
     return output
 
 
@@ -228,8 +229,9 @@ class OpenflowService:
         Openflow Service
         Microservice that translates the information sent by the api to commands applicable in Openflow devices
         Receive: this function receives a python dictionary, with at least the following information for each processing
-        Return: The microservice activates the application module via ssh and returns the result. If any incorrect
-        information in the dictionary, the error message is returned
+        Return:
+            - The microservice activates the application module via ssh and returns the result. If any incorrect
+            information in the dictionary, the error message is returned
         Translations for NAT1toN and Route have not yet been implemented
         """
     name = "openflow_translator"

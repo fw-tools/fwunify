@@ -1,2 +1,2 @@
 # log nat rules
-{'intent_type': 'nat11', 'from': '200.19.0.50', 'to': '10.0.0.50', 'protocol': 'all', 'devices': ['cisco-1', 'iptables-1', 'openflow-1'], 'apply': 'insert'}
+

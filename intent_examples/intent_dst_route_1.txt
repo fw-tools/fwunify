@@ -1,4 +1,4 @@
 define intent dst_route:
   to    range('10.0.20.0/23')
   from  gateway('200.19.0.1')
-  add	middlebox('cisco-1'),middlebox('iptables-1')
+  add	middlebox('cisco-1','iptables-1')

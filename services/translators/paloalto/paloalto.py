@@ -51,7 +51,7 @@ def define_order(dict_intent):
     with open(file) as archive:
         if dict_intent['apply'] == 'insert':
             if 'after' in dict_intent:
-                if dict_intent['after'] == 'all':
+                if dict_intent['after'] == 'all-intents':
                     for line_num, l in enumerate(archive, 0):
                         line = line_num
                     line = line + 1
@@ -60,7 +60,7 @@ def define_order(dict_intent):
                         if "'name': '" + dict_intent['after'] + "'" in l:
                             line = line_num + 1
             elif 'before' in dict_intent:
-                if dict_intent['before'] == 'all':
+                if dict_intent['before'] == 'all-intents':
                     line = 1
                 else:
                     for line_num, l in enumerate(archive, 0):
@@ -135,9 +135,9 @@ class PaloaltoService:
         Palo alto
         Microservice that translates the information sent by the api to commands applicable in Palo Alto
         Receive: this function receives a python dictionary, with at least the following information for each processing
-        
-        Return: The microservice activates the application module via ssh and returns the result. If any incorrect
-        information in the dictionary, the error message is returned
+        Return:
+            - The microservice activates the application module via ssh and returns the result. If any incorrect
+            information in the dictionary, the error message is returned
     """
     name = "paloalto_translator"
     zipcode_rpc = RpcProxy('paloalto_service_translator')
