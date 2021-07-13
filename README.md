@@ -3,7 +3,7 @@
 Este repositório traz o protótipo FWunify, desenvolvido como forma de validação para a linguagem FWlang, utilizada no gerenciamento de firewalls em redes híbridas (redes compostas de equipamentos tradicionais e SDN).
 
 ## Instalação do software
-ATENÇÃO: Esse processo de instação/utilização foi testado e validado para Ubuntu 18.04. Instalações em outras distribuições podem necessitar ajustes.
+ATENÇÃO: Esse processo de instação/utilização foi testado e validado para Ubuntu 20.04. Instalações em outras distribuições podem necessitar ajustes.
 
 Faça a instalação do GIT e do virtualenv:
 
@@ -47,7 +47,7 @@ Execute a API para recepção das intenções
 
 `python src/api.py`
 
-Em outro terminal, utilize o método HTTP POST (por exemplo: comando curl) para enviar a intenção em NILE para a aplicação:
+Em outro terminal, utilize o método HTTP POST (por exemplo: comando curl) para enviar a intenção em FWlang para a aplicação:
 
 ```bash
 curl -u user1:user1 --data-binary "@intent.txt" -X POST http://localhost:5000
@@ -116,7 +116,7 @@ Run the API to receive intentions
 python src/api.py
 ```
 
-In another terminal, use the HTTP POST method (for example: curl command) to send the intention in NILE to the application:
+In another terminal, use the HTTP POST method (for example: curl command) to send the intention in FWlang to the application:
 
 ```bash
 curl --data-binary "@intent.txt" -X POST http://localhost:5000

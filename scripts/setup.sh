@@ -11,10 +11,10 @@ sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
   build-essential \
   curl \
-  python3.7 \
+  python3 \
   python3-dev \
   python3-flask \
-  python-ipaddr \
+  python3-ipaddr \
   python3-jinja2 \
   python3-pip \
   python3-yaml \
