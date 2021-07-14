@@ -1,0 +1,29 @@
+Passo-a-passo: adicionando um novo tradutor
+
+Um novo módulo pode ser adicionado para atender especificidades de atualizações de software de alguns firewalls (e.g., um dos firewalls Cisco ASA foi atualizado da versão 8.2 para a versão 8.4) da rede ou a inclusão de um novo tipo de firewall. 
+O processo de adição de um novo tradutor pode ser dividido em duas etapas: (i) a implementação do módulo a partir de templates existentes, e (ii) a ativação do módulo na arquitetura.
+
+Os módulos de tradução são compostos por três arquivos:
+(a) um arquivo de configuração YAML (Yet Another Markup Language) com as informações do firewall a ser gerenciado, como IP de gerência, credenciais de acesso (e.g., usuário e senha), e interfaces (e.g, interna, externa, DMZ); 
+(b) um arquivo template, em linguagem Jinja2, que especifica as partes estáticas e dinâmicas da sintaxe (necessária para a tradução) dos comandos do firewall, onde as partes dinâmicas serão preenchidas com as informações vindas da intenção; e
+(c) um arquivo com o código Python que implementa a tradução das informações vindas da intenção em comandos específicos ao firewall. 
+O código do tradutor recebe um dicionário Python com as informações extraídas da intenção pelo serviço REST, processa as traduções específicas (e.g., mudar uma máscara de rede para o padrão CIDR, ou converter uma largura de banda de Mbps para Kbps) e utiliza o  template Jinja2 para compor os comandos da regra na sintaxe específica do firewall.
+
+O novo tradutor deve ser copiado para a pasta "services/translators" do estrutura de arquivos da  FWunify. 
+Para habilitar o novo microsserviço de tradução, o serviço REST deve ser informado da existência do novo módulo de tradução. 
+Isso é realizado através do arquivo de configuração "etc/services_enable.conf", onde é especificado o identificador (que é utilizado nas intenções) do novo firewall, além da função da chamada remota definida na implementação do tradutor (e.g.,rpc_cisco_asa_5505_translator.translate_intent). 
+Abaixo está apresentado um exemplo de conteúdo deste arquivo de configuração.
+A partir deste ponto, as intenções podem ser enviadas ao novo tradutor, utilizando o identificador (alias) do firewall nos marcadores middlebox ou firewall da intenção.
+
+```
+#alias      #function
+cisco-1     cisco_translator.translate_intent
+iptables-1  iptables_translator.translate_intent
+openflow-1  openflow_translator.translate_intent
+```
+
+Para aplicação das regras no firewall, o tradutor utiliza também um dos componentes disponíveis na camada da interface sul. 
+Supondo que o firewall suporte acesso remoto via SSH, basta utilizar o conector SSH disponível. 
+Caso contrário, poderá ser necessário implementar um novo conector na camada da interface sul (e.g., um conector NetConf). 
+A identificação do conector a ser utilizado deve ser feita no código do tradutor, onde deve ser indicada a chamada remota definida na implementação do tradutor.
+

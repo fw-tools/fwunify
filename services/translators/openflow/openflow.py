@@ -172,9 +172,9 @@ def process_acl(dict_intent):
     archive.close()
     output = output + '\novs-ofctl add-flow ' + dict_intent['hostname'] + ' priority=0,action=normal'
 
-    with ClusterRpcProxy(CONFIG) as rpc_connect:
-       rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'], config['password'],
-                                               config['device_type'], output, 'openflow')
+    #with ClusterRpcProxy(CONFIG) as rpc_connect:
+    #   rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'], config['password'],
+    #                                           config['device_type'], output, 'openflow')
     return response
 
 
@@ -187,9 +187,9 @@ def process_nat11(dict_intent):
     env = Environment(loader=file_loader)
     template = env.get_template('openflow_template.j2')
     output = template.render(dict_intent)
-    with ClusterRpcProxy(CONFIG) as rpc_connect:
-       rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'], config['password'],
-                                               config['device_type'], output, 'openflow')
+    #with ClusterRpcProxy(CONFIG) as rpc_connect:
+    #   rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'], config['password'],
+    #                                           config['device_type'], output, 'openflow')
     return output
 
 
@@ -205,10 +205,10 @@ def process_traffic_shaping(dict_intent):
     env = Environment(loader=file_loader)
     template = env.get_template('openflow_template.j2')
     output = template.render(dict_intent)
-    with ClusterRpcProxy(CONFIG) as rpc_connect:
-        rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
-                                                 config['password'],
-                                                 config['device_type'], output, 'openflow')
+    #with ClusterRpcProxy(CONFIG) as rpc_connect:
+    #    rpc_connect.linux_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
+    #                                             config['password'],
+    #                                             config['device_type'], output, 'openflow')
     return output
 
 

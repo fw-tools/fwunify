@@ -8,7 +8,7 @@
 ####
 
 sudo apt-get update
-sudo apt-get install -y --no-install-recommends \
+sudo apt-get install -y \
   build-essential \
   curl \
   python3 \

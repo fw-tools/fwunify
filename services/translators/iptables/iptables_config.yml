@@ -1,9 +1,9 @@
 ---
 hostname: iptables-firewall
-ip_manage: 172.30.0.3
+ip_manage: 127.0.0.1 
 ssh_port: 22
-username: iptables
-password: iptables
+username: admin
+password: admin
 device_type: linux
 
 

@@ -178,8 +178,8 @@ def process_acl(dict_intent):
     env = Environment(loader=file_loader)
     template = env.get_template('cisco_template.j2')
     output = template.render(dict_intent)
-    with ClusterRpcProxy(CONFIG) as rpc_connect:
-        rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'], config['password'], config['device_type'], output)
+    #with ClusterRpcProxy(CONFIG) as rpc_connect:
+    #    rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'], config['password'], config['device_type'], output)
     return output
 
 
@@ -201,9 +201,9 @@ def process_nat11(dict_intent):
     env = Environment(loader=file_loader)
     template = env.get_template('cisco_template.j2')
     output = template.render(dict_intent)
-    with ClusterRpcProxy(CONFIG) as rpc_connect:
-        rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
-                                              config['password'], config['device_type'], output)
+    #with ClusterRpcProxy(CONFIG) as rpc_connect:
+    #    rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
+    #                                          config['password'], config['device_type'], output)
     return output
 
 
@@ -243,9 +243,9 @@ def process_traffic_shaping(dict_intent):
     env = Environment(loader=file_loader)
     template = env.get_template('cisco_template.j2')
     output = template.render(dict_intent)
-    with ClusterRpcProxy(CONFIG) as rpc_connect:
-        rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
-                                               config['password'], config['device_type'], output)
+    #with ClusterRpcProxy(CONFIG) as rpc_connect:
+    #    rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
+    #                                           config['password'], config['device_type'], output)
     return output
 
 
@@ -260,8 +260,8 @@ def process_dst_route(dict_intent):
     template = env.get_template('cisco_template.j2')
     output = template.render(dict_intent)
     with ClusterRpcProxy(CONFIG) as rpc_connect:
-        rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
-                                              config['password'], config['device_type'], output)
+    #    rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
+    #                                          config['password'], config['device_type'], output)
     return output
 
 
@@ -277,9 +277,9 @@ def process_natn1(dict_intent):
     env = Environment(loader=file_loader)
     template = env.get_template('cisco_template.j2')
     output = template.render(dict_intent)
-    with ClusterRpcProxy(CONFIG) as rpc_connect:
-        rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
-                                              config['password'], config['device_type'], output)
+    #with ClusterRpcProxy(CONFIG) as rpc_connect:
+    #   rpc_connect.cisco_connector.apply_config(config['ip_manage'], config['ssh_port'], config['username'],
+    #                                          config['password'], config['device_type'], output)
     return output
 
 

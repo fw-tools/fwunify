@@ -32,6 +32,21 @@ Execute o script "preparing_environment.sh" para instalação das dependências
 
 * Poderá ser solicitada a senha de usuário para instalação dos pacotes
 
+## Preparação da máquina
+Para aplicar as regras traduzidas no firewall IPTables do sistema operacional, será necessário configurar o acesso ssh, bem como a criação de um usuário para este fim. 
+
+Faça a instalação do servidor SSH:
+
+`sudo apt-get install openssh-server`
+
+Crie o usuário admin:
+
+`sudo useradd admin ; sudo passwd admin`
+* Quando solicitada a senha, digite "admin", sem aspas.
+
+Execute o comando abaixo para ajustar as permissões:
+
+`usermod -G sudo admin`
 
 ## Uso
 Certifique-se que esteja na virtualenv criada para o projeto, indicada por "(venv_firewall)" no console.
@@ -62,72 +77,3 @@ Este software não possui nenhuma forma de suporte. Caso tenha alguma dúvida fa
 ## Creditos
 * Desenvolvimento: Maurício Fiorenza
 * Orientação: Diego Kreutz
-
-
-
-# English version
-## Validation prototype
-This repository presents the FWunify prototype, developed as a form of validation for the FWlang language, used in firewall management in hybrid networks  (networks composed of traditional equipment and SDN).
-
-## Software installation
-ATTENTION: This installation/use process has been tested and validated for Ubuntu 18.04. Installations in other distributions may require adjustments.
-
-Install GIT and virtualenv:
-
-`sudo apt-get install git virtualenv`
-* User password will be requested
-
-Use the commands below to create and activate the project's virtualenv:
-
-```bash
-virtualenv venv_firewall --python=python3
-source venv_firewall/bin/activate
-cd venv_firewall
-```
-
-Download the project using git
-
-`git clone https://github.com/mmfiorenza/fwunify`
-
-Access the project folder.
-
-`cd fwunify`
-
-Run the "preparing_environment.sh" script to install the dependenciess
-
-`bash scripts/setup.sh`
-
-
-## Usage
-Make sure you are in the virtualenv created for the project, indicated by "(venv_firewall)" in the console.
-If not, run the command below:
-
-`source ../bin/activate`
-
-Run the translator modules using the script “run_application.sh”
-
-```bash
-bash scripts/start_microservices.sh
-```
-
-Run the API to receive intentions
-
-```bash
-python src/api.py
-```
-
-In another terminal, use the HTTP POST method (for example: curl command) to send the intention in FWlang to the application:
-
-```bash
-curl --data-binary "@intent.txt" -X POST http://localhost:5000
-```
-Examples of the three supported intentions are available in the “intent_examples” folder.
-
-
-## Support
-This software does not have any form of support. If you have any questions please send an email to mauriciofiorenza.aluno@unipampa.edu.br.
-
-
-## Credits
-* Development: Maurício Fiorenza
-* Mentor: Diego Kreutz
