@@ -789,6 +789,8 @@ def process_intent(intent, role):
         archive.write(intent)
     archive = open(intent_archive, 'r')
     tmp_intent = archive.readlines()[get_line('define intent'):]
+    if len(tmp_intent) == 0:
+        return "Intent is incomplete or empty"
     _, _, intent_type = tmp_intent[0].split()
     intent_type = intent_type[0:intent_type.index(':')]
     final_intent = {'intent_type': intent_type.lower()}

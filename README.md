@@ -48,6 +48,11 @@ Execute o comando abaixo para ajustar as permissões:
 
 `sudo usermod -G sudo admin`
 
+Utilize o comando abaixo para testar a conexão:
+`ssh admin@127.0.0.1`
+* Quando solicitado digite "yes".
+* Para sair, digite "exit"
+
 ## Uso
 Certifique-se que esteja na virtualenv criada para o projeto, indicada por "(venv_firewall)" no console.
 Caso não esteja, execute o comando abaixo:
@@ -62,12 +67,27 @@ Execute a API para recepção das intenções
 
 `python src/api.py`
 
-Em outro terminal, utilize o método HTTP POST (por exemplo: comando curl) para enviar a intenção em FWlang para a aplicação:
+
+## Exemplo de uso
+
+Em outro terminal, acesse a pasta com o exemplos de intenção:
+
+`cd intent_examples`
+
+
+Utilize comando curl para enviar a intenção em FWlang para a aplicação:
 
 ```bash
-curl -u user1:user1 --data-binary "@intent.txt" -X POST http://localhost:5000
+curl -u user1:user1 --data-binary "@intent_acl_1.txt" -X POST http://localhost:5000
 ```
-Exemplos das três intenções suportadas estão disponíveis na pasta “intent_examples”.
+
+Para verificar a aplicação da regra no firewall IPTables execute o comando:
+
+`sudo iptables -L`
+
+Para remover a regra, edite o arquivo substituindo o marcador "add" por "del" e faça o envio da intenção novamente com o comando curl, ou se preferir, execute o comando abaixo:
+
+`sudo iptables -F`
 
 
 ## Suporte
