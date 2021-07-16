@@ -37,7 +37,7 @@ Para aplicar as regras traduzidas no firewall IPTables do sistema operacional, s
 
 Faça a instalação do servidor SSH:
 
-`sudo apt-get install openssh-server`
+`sudo apt-get install openssh-server -y`
 
 Crie o usuário admin:
 
@@ -46,7 +46,7 @@ Crie o usuário admin:
 
 Execute o comando abaixo para ajustar as permissões:
 
-`usermod -G sudo admin`
+`sudo usermod -G sudo admin`
 
 ## Uso
 Certifique-se que esteja na virtualenv criada para o projeto, indicada por "(venv_firewall)" no console.

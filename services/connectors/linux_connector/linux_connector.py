@@ -31,8 +31,8 @@ class SSH:
         archive = open('.command.txt', 'r')
         try:
             ssh_session = netmiko.ConnectHandler(device_type=device_type, ip=host, port=port, username=username, password=password)
-            ssh_session.send_command_expect("sudo su" + '\n', expect_string=": ")
-            ssh_session.send_command_expect(password + '\n', expect_string="# ")
+            ssh_session.send_command_expect("sudo su" + '\n', expect_string=": ", cmd_verify=False)
+            ssh_session.send_command_expect(password + '\n', expect_string="# ", cmd_verify=False)
             if device == 'openflow':
                 ssh_session.send_command_expect('docker attach competent_bose' + '\n', expect_string="# ")
             for line in archive:

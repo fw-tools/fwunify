@@ -41,7 +41,7 @@ def is_valid_ip(ip):
 
 
 def is_valid_date_hour(type, value):
-    if type is 'hour':
+    if type == 'hour':
         regex = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$"
         p = re.compile(regex)
         if value == "":
@@ -50,7 +50,7 @@ def is_valid_date_hour(type, value):
             return False;
         else:
             return True;
-    elif type is 'date':
+    elif type == 'date':
         d, m, y = value.split('/')
         try:
             datetime.datetime(int(y),int(m),int(d))
