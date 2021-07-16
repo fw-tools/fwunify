@@ -1,6 +1,5 @@
-# Versão em português
 ## Protótipo de validação
-Este repositório traz o protótipo FWunify, desenvolvido como forma de validação para a linguagem FWlang, utilizada no gerenciamento de firewalls em redes híbridas (redes compostas de equipamentos tradicionais e SDN).
+Este repositório traz o protótipo FWunify, desenvolvido para gerenciamento de múltiplos firewalls em redes corporativas.
 
 ## Instalação do software
 ATENÇÃO: Esse processo de instação/utilização foi testado e validado para Ubuntu 20.04. Instalações em outras distribuições podem necessitar ajustes.
@@ -26,14 +25,14 @@ Acesse a pasta do projeto.
 
 `cd fwunify`
 
-Execute o script "preparing_environment.sh" para instalação das dependências
+Execute o script "setup.sh" para instalação das dependências
 
 `bash scripts/setup.sh`
 
 * Poderá ser solicitada a senha de usuário para instalação dos pacotes
 
 ## Preparação da máquina
-Para aplicar as regras traduzidas no firewall IPTables do sistema operacional, será necessário configurar o acesso ssh, bem como a criação de um usuário para este fim. 
+Para aplicar as regras traduzidas no firewall IPTables do sistema operacional, será necessário configurar o acesso SSH, bem como a criação de um usuário para este fim. 
 
 Faça a instalação do servidor SSH:
 
@@ -51,6 +50,7 @@ Execute o comando abaixo para ajustar as permissões:
 Utilize o comando abaixo para testar a conexão:
 `ssh admin@127.0.0.1`
 * Quando solicitado digite "yes".
+* Quando solicitado digite a senha "admin", sem aspas.
 * Para sair, digite "exit"
 
 ## Uso
@@ -59,7 +59,7 @@ Caso não esteja, execute o comando abaixo:
 
 `source ../bin/activate`
 
-Execute os módulos tradutores utilizando o script “run_application.sh”
+Execute os módulos tradutores utilizando o script “start_microservices.sh”
 
 `bash scripts/start_microservices.sh`
 
