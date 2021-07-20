@@ -90,6 +90,15 @@ Para remover a regra, edite o arquivo substituindo o marcador "add" por "del" e 
 `sudo iptables -F`
 
 
+## Ambientes
+A ferramenta já foi testada e utilizada na prática nos seguintes ambientes / distribuições GNU/Linux:
+
+Ubuntu 20.04:
+
+`Kernel = 5.8.0-59-generic #66~20.04.1-Ubuntu SMP Thu Jun 17 2021 x86_64 GNU/Linux`
+`Python = Python 3.8.10`
+
+
 ## Suporte
 Este software não possui nenhuma forma de suporte. Caso tenha alguma dúvida favor enviar um e-mail para mauriciofiorenza.aluno@unipampa.edu.br.
 
