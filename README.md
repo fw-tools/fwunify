@@ -91,7 +91,7 @@ Para remover a regra, edite o arquivo substituindo o marcador "add" por "del" e 
 
 
 ## Ambientes
-A ferramenta já foi testada e utilizada na prática nos seguintes ambientes / distribuições GNU/Linux:
+A ferramenta já foi testada e utilizada na prática nos seguintes ambientes/distribuições GNU/Linux:
 
 Ubuntu 20.04:
 
