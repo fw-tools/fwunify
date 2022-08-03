@@ -91,4 +91,4 @@ Este software não possui nenhuma forma de suporte. Caso tenha alguma dúvida fa
 
 ## Creditos
 * Desenvolvimento: Maurício Fiorenza
-* Orientação: Diego Kreutz
+* Orientação: Diego Kreu
