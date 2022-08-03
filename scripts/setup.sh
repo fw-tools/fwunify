@@ -20,6 +20,6 @@ sudo apt-get install -y \
   python3-yaml \
   python3-netmiko \
   python3-setuptools \
-  rabbitmq-server
+  rabbitmq-server=2.1.2
 
 pip3 install -r requirements.txt

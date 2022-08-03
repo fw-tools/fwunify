@@ -843,7 +843,9 @@ def receive_intent():
     request.get_data()
     profile = getProfile(apiProfile.Users, auth.username())
     response = process_intent(request.data, profile["Role"])
-    return response+"\n", 200
+    if response is None:
+        response = ''
+    return response + "\n", 200
 
 
 @auth.verify_password
@@ -861,6 +863,7 @@ def getProfile(Users, username):
 
 
 if __name__ == '__main__':
+    os.makedirs('src/log', exist_ok=True)
     app.run()
 
 

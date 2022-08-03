@@ -1,2 +1,0 @@
-
-ovs-vsctl set interface s1-eth1 ingress_policing_rate=0

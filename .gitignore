@@ -1,0 +1,8 @@
+**/__pycache__
+share
+lib*
+bin
+*.stackdump
+intent.txt
+**/.command.txt
+**/log

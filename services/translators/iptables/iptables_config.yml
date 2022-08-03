@@ -2,8 +2,8 @@
 hostname: iptables-firewall
 ip_manage: 127.0.0.1 
 ssh_port: 22
-username: admin
-password: admin
+username: fwunify
+password: fwunify
 device_type: linux
 
 

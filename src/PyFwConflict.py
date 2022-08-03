@@ -1,6 +1,6 @@
 import ast
+import os
 from netaddr import IPAddress, IPNetwork
-
 
 def check_ip_network(ip, network):
     if ip == 'all':
@@ -23,7 +23,7 @@ def check_rule(dict_intent):
     # check name
     if dict_intent['intent_type'] == 'acl' or dict_intent['intent_type'] == 'traffic_shaping':
         ctr = 0
-        with open(file) as archive:
+        with open(file, 'w+') as archive:
             for line in archive:
                 if '#' not in line[0:5] and line[0:1] != "\n":
                     dict_rule = ast.literal_eval(line)
@@ -35,7 +35,7 @@ def check_rule(dict_intent):
             if ctr == 0 and dict_intent['apply'] == 'remove':
                 return 'ERROR NAME: Rule named "' + dict_intent['name'] + '" not found'
     # check duplicate
-    with open(file) as archive:
+    with open(file, 'w+') as archive:
         for line in archive:
             if '#' not in line[0:5] and line[0:1] != "\n":
                 dict_rule = ast.literal_eval(line)
@@ -63,7 +63,7 @@ def check_rule(dict_intent):
                                         'name'] + '" already treats this intention'
     # check ranges networks
     if dict_intent['intent_type'] == 'acl' or dict_intent['intent_type'] == 'traffic_shaping':
-        with open(file) as archive:
+        with open(file, 'w+') as archive:
             for line in archive:
                 if '#' not in line[0:5] and line[0:1] != "\n":
                     dict_rule = ast.literal_eval(line)
@@ -92,7 +92,7 @@ def check_rule(dict_intent):
                                             return 'ERROR DUPLICATE: The rule "' + dict_rule[
                                                 'name'] + '" already treats this intention'
     archive.close()
-    archive = open(file)
+    archive = open(file, 'w+')
     lines = archive.readlines()
     if dict_intent['apply'] == 'insert':
         lines.append(str(dict_intent) + '\n')
@@ -112,8 +112,6 @@ def check_rule(dict_intent):
         if ctr == 0:
             return 'ERROR: This NAT intention does not exist'
         lines.pop(line)
-    archive.close()
-    archive = open(file, 'w')
     archive.writelines(lines)
     archive.close()
     return 'OK'
@@ -126,7 +124,7 @@ def remove_error_rule(dict_intent):
         file = 'src/log/nat_log'
     elif dict_intent['intent_type'] == 'traffic_shaping':
         file = 'src/log/ts_log'
-    archive = open(file)
+    archive = open(file, 'w+')
     lines = archive.readlines()
     ctr = 0
     for line_num, l in enumerate(lines, 0):
@@ -143,7 +141,5 @@ def remove_error_rule(dict_intent):
     if ctr == 0:
         return 'ERROR: This NAT intention does not exist'
     lines.pop(line)
-    archive.close()
-    archive = open(file, 'w')
     archive.writelines(lines)
     archive.close()
