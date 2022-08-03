@@ -16,7 +16,8 @@ Execute o script "setup.sh" para instalação das dependências
 
 `bash scripts/setup.sh`
 
-* Poderá ser solicitada a senha de usuário para instalação dos pacotes
+- Poderá ser solicitada a senha de usuário para instalação dos pacotes
+- Caso necessário use o comando `dos2unix` para converter as quebras de linha
 
 ## Preparação da máquina
 Para aplicar as regras traduzidas no firewall IPTables do sistema operacional, será necessário configurar o acesso SSH, bem como a criação de um usuário para este fim. 
