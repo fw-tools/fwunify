@@ -4,26 +4,13 @@ Este repositório traz o protótipo FWunify, desenvolvido para gerenciamento de 
 ## Instalação do software
 ATENÇÃO: Esse processo de instação/utilização foi testado e validado para Ubuntu 20.04. Instalações em outras distribuições podem necessitar ajustes.
 
-Faça a instalação do GIT e do virtualenv:
+Faça a instalação das dependências:
 
-`sudo apt-get install git virtualenv`
-* Será solicitada a senha do usuário
+`pipenv install`
 
-Utilize os comandos abaixo para criar e ativar a virtualenv do projeto:
+Acesse a venv.
 
-```bash
-virtualenv venv_firewall --python=python3
-source venv_firewall/bin/activate
-cd venv_firewall
-```
-
-Faça o download do projeto utilizando git
-
-`git clone https://github.com/mmfiorenza/fwunify`
-
-Acesse a pasta do projeto.
-
-`cd fwunify`
+`pipenv shell`
 
 Execute o script "setup.sh" para instalação das dependências
 
@@ -34,30 +21,28 @@ Execute o script "setup.sh" para instalação das dependências
 ## Preparação da máquina
 Para aplicar as regras traduzidas no firewall IPTables do sistema operacional, será necessário configurar o acesso SSH, bem como a criação de um usuário para este fim. 
 
-Faça a instalação do servidor SSH:
+**Garanta que o serviço SSH está ativado e que as configurações em /etc/ssh/sshd_config permitem o acesso por senha de texto**
 
-`sudo apt-get install openssh-server -y`
+Crie o usuário fwunify:
 
-Crie o usuário admin:
-
-`sudo useradd admin ; sudo passwd admin`
-* Quando solicitada a senha, digite "admin", sem aspas.
+`sudo adduser fwunify`
+* Quando solicitada a senha, digite "fwunify", sem aspas.
 
 Execute o comando abaixo para ajustar as permissões:
 
-`sudo usermod -G sudo admin`
+`sudo usermod -G sudo fwunify`
 
 Utilize o comando abaixo para testar a conexão:
-`ssh admin@127.0.0.1`
+`ssh fwunify@127.0.0.1`
 * Quando solicitado digite "yes".
-* Quando solicitado digite a senha "admin", sem aspas.
+* Quando solicitado digite a senha "fwunify", sem aspas.
 * Para sair, digite "exit"
 
 ## Uso
-Certifique-se que esteja na virtualenv criada para o projeto, indicada por "(venv_firewall)" no console.
+Certifique-se que esteja na virtualenv criada para o projeto.
 Caso não esteja, execute o comando abaixo:
 
-`source ../bin/activate`
+`pipenv shell`
 
 Execute os módulos tradutores utilizando o script “start_microservices.sh”
 
