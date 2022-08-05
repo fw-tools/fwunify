@@ -40,10 +40,12 @@ Utilize o comando abaixo para testar a conexão:
 * Para sair, digite "exit"
 
 ## Uso
-Certifique-se que esteja na virtualenv criada para o projeto.
-Caso não esteja, execute o comando abaixo:
+Certifique-se que esteja na virtualenv criada para o projeto, verifique também se o serviço `rabbitmq-server` está ativo e configurado:
 
-`pipenv shell`
+```bash
+sudo rabbitmq-plugins enable rabbitmq_management
+sudo service rabbitmq-server restart
+```
 
 Execute os módulos tradutores utilizando o script “start_microservices.sh”
 
