@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 flask = "==1.1.4"
-jinja2 = "==2.11.2"
+jinja2 = "==2.11.3"
 netaddr = "==0.7.19"
 yamlreader = "==3.0.4"
 nameko = "==2.14.0"
