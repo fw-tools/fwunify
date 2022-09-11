@@ -3,6 +3,12 @@ This repository brings the FWUnify prototype, developed for managing multiple fi
 
 ## Usage
 
+To use this application, simply create and run a Docker container using the image available [here](https://github.com/fw-tools/fwunify/pkgs/container/fwunify).
+
+Or, if you wish, you can also build the image yourself with the provided `Dockerfile`.
+
+**!!!!!!todo: describe how to use the application and its features**
+
 ## Manual installation and usage
 
 First, make sure you have the following requirements:
@@ -42,11 +48,15 @@ sudo service rabbitmq-server restart
 
 If everything is setup and working, then it's time to start the micro-services required for FWUnify to work:
 
-`bash scripts/start_microservices.sh`
+```bash
+bash scripts/start_microservices.sh
+```
 
 Lastly, run FWUnify with:
 
-`python src/api.py`
+```bash
+python src/api.py
+```
 
 ## Credits
 Development: Maurício Fiorenza
