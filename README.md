@@ -1,96 +1,81 @@
-## Protótipo de validação
-Este repositório traz o protótipo FWunify, desenvolvido para gerenciamento de múltiplos firewalls em redes corporativas.
+[//]: # (Add FWUnify banner here)
+This repository hosts the FWUnify prototype, developed for managing multiple firewalls in corporate networks.
 
-## Instalação do software
-ATENÇÃO: Esse processo de instação/utilização foi testado e validado para Ubuntu 20.04. Instalações em outras distribuições podem necessitar ajustes.
+## Usage
 
-Faça a instalação das dependências:
+To use this application, simply create and run a Docker container using the image available [here](https://github.com/fw-tools/fwunify/pkgs/container/fwunify).
 
-`pipenv install`
+Or, if you wish, you can also build the image yourself with the provided `Dockerfile`.
 
-Acesse a venv.
+You can find some examples of firewall rules at `intent_example`, use `curl` to send those rules to your running FWUnify environment:
 
-`pipenv shell`
+```bash
+cd intent_examples
+curl -u user1:user1 --data-binary "@intent_acl_1.txt" -X POST http://localhost:5000
+```
 
-Execute o script "setup.sh" para instalação das dependências
+Now you can verify the firewall rules, such as with `iptables`:
 
-`bash scripts/setup.sh`
+```bash
+sudo iptables -L
+```
 
-- Poderá ser solicitada a senha de usuário para instalação dos pacotes
-- Caso necessário use o comando `dos2unix` para converter as quebras de linha
+To remove a rule, edit it replacing the "add" marker with "del" and send the intent again with `curl`, or if you prefer, run the command below:
 
-## Preparação da máquina
-Para aplicar as regras traduzidas no firewall IPTables do sistema operacional, será necessário configurar o acesso SSH, bem como a criação de um usuário para este fim. 
+```bash
+sudo iptables -F
+```
 
-**Garanta que o serviço SSH está ativado e que as configurações em /etc/ssh/sshd_config permitem o acesso por senha de texto**
+## Manual installation and usage
 
-Crie o usuário fwunify:
+First, make sure you have the following requirements:
 
-`sudo adduser fwunify`
-* Quando solicitada a senha, digite "fwunify", sem aspas.
+- [Python](https://www.python.org/) >= 3.8.10
+- [pipnev](https://pypi.org/project/pipenv/) >= 2022.5.2
+- iptables
+- ssh
+- [RabbitMQ](https://www.rabbitmq.com/download.html) == 3.10.7
 
-Execute o comando abaixo para ajustar as permissões:
+Then, start by using **pipenv** to install all dependencies:
 
-`sudo usermod -G sudo fwunify`
+```bash
+pipenv install -d
+```
 
-Utilize o comando abaixo para testar a conexão:
-`ssh fwunify@127.0.0.1`
-* Quando solicitado digite "yes".
-* Quando solicitado digite a senha "fwunify", sem aspas.
-* Para sair, digite "exit"
+**WARNING:** *Ensure that the SSH service is enabled and that the settings in /etc/ssh/sshd_config do allow for text password access*
 
-## Uso
-Certifique-se que esteja na virtualenv criada para o projeto, verifique também se o serviço `rabbitmq-server` está ativo e configurado:
+Create an user to be used by FWUnify:
+
+```bash
+sudo useradd -G sudo -p fwunify fwunify
+```
+
+Access the virtual environment
+
+```bash
+pipenv shell
+```
+
+Make sure **RabbitMQ** services are enabled and working:
 
 ```bash
 sudo rabbitmq-plugins enable rabbitmq_management
 sudo service rabbitmq-server restart
 ```
 
-Execute os módulos tradutores utilizando o script “start_microservices.sh”
-
-`bash scripts/start_microservices.sh`
-
-Execute a API para recepção das intenções
-
-`python src/api.py`
-
-
-## Exemplo de uso
-
-Em outro terminal, acesse a pasta com o exemplos de intenção:
-
-`cd intent_examples`
-
-
-Utilize comando curl para enviar a intenção em FWlang para a aplicação:
+If everything is setup and working, then it's time to start the micro-services required for FWUnify to work:
 
 ```bash
-curl -u user1:user1 --data-binary "@intent_acl_1.txt" -X POST http://localhost:5000
+bash scripts/start_microservices.sh
 ```
 
-Para verificar a aplicação da regra no firewall IPTables execute o comando:
+Lastly, run FWUnify with:
 
-`sudo iptables -L`
+```bash
+python src/api.py
+```
 
-Para remover a regra, edite o arquivo substituindo o marcador "add" por "del" e faça o envio da intenção novamente com o comando curl, ou se preferir, execute o comando abaixo:
+## Credits
+Development: Maurício Fiorenza
 
-`sudo iptables -F`
-
-
-## Ambientes
-A ferramenta já foi testada e utilizada na prática nos seguintes ambientes/distribuições GNU/Linux:
-
-Ubuntu 20.04:
-
- * `Kernel = 5.8.0-59-generic #66~20.04.1-Ubuntu SMP Thu Jun 17 2021 x86_64 GNU/Linux`
- * `Python = Python 3.8.10`
-
-
-## Suporte
-Este software não possui nenhuma forma de suporte. Caso tenha alguma dúvida favor enviar um e-mail para mauriciofiorenza.aluno@unipampa.edu.br.
-
-
-## Creditos
-* Desenvolvimento: Maurício Fiorenza
-* Orientação: Diego Kreu
+Guidance: Diego Kreutz
