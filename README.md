@@ -1,5 +1,5 @@
-
-This repository brings the FWUnify prototype, developed for managing multiple firewalls in corporate networks.
+[//]: # (Add FWUnify banner here)
+This repository hosts the FWUnify prototype, developed for managing multiple firewalls in corporate networks.
 
 ## Usage
 
@@ -7,7 +7,24 @@ To use this application, simply create and run a Docker container using the imag
 
 Or, if you wish, you can also build the image yourself with the provided `Dockerfile`.
 
-**!!!!!!todo: describe how to use the application and its features**
+You can find some examples of firewall rules at `intent_example`, use `curl` to send those rules to your running FWUnify environment:
+
+```bash
+cd intent_examples
+curl -u user1:user1 --data-binary "@intent_acl_1.txt" -X POST http://localhost:5000
+```
+
+Now you can verify the firewall rules, such as with `iptables`:
+
+```bash
+sudo iptables -L
+```
+
+To remove a rule, edit it replacing the "add" marker with "del" and send the intent again with `curl`, or if you prefer, run the command below:
+
+```bash
+sudo iptables -F
+```
 
 ## Manual installation and usage
 
@@ -60,4 +77,5 @@ python src/api.py
 
 ## Credits
 Development: Maurício Fiorenza
-Orientation: Diego Kreutz
+
+Guidance: Diego Kreutz
