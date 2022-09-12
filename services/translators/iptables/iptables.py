@@ -112,10 +112,7 @@ def process_acl(dict_intent):
         elif dict_intent['to'] == re.search(r'(.*)/', str(interface['addr'])).group(1):
             dict_intent['chain'] = 'INPUT'
         else:
-            dict_intent['chain'] = 'FORWARD'
-    if 'from_interface' not in dict_intent and 'to_interface' not in dict_intent:
-        if dict_intent['from'] != 'all' and dict_intent['to'] != 'all':
-            return "IPTABLES MODULE: Unrecognized network"
+            dict_intent['chain'] = 'OUTPUT'
 
     if dict_intent['from'] == 'all':
         dict_intent['from'] = '0.0.0.0/0.0.0.0'
